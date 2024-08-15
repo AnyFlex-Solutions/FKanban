@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+    <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/body.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/js/kanban.js}"></script>
+
+    <title>kanban</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+    <link href="../static/css/kanban.css" th:href="@{/css/kanban.css}" rel="stylesheet" />
+</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
+    <div th:fragment="content" class="myClass">
+        <!-- Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Edit Task</h2>
+                <form id="editForm">
+                    <label for="editTitle">Title:</label>
+                    <input type="text" id="editTitle" name="editTitle">
+
+                    <label for="editDescription">Description:</label>
+                    <textarea id="editDescription" name="editDescription"></textarea>
+
+                    <button type="submit" id="saveButton">Save</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="container" th:name="${kanbanId}" id="kanban-board">
+            <div class="row centr">
+                <form class="input-container">
+                    <div class="fields">
+                        <input id="title" placeholder="title..." />
+                        <input id="description" placeholder="description..." />
+                    </div>
+                    <input type="submit" id="submit-button" />
+                </form>
+            </div>
+
+            <div class="row kanb centr">
+                <section class="column-container">
+                    <div class="task-column" id="backlog">
+                        <h3> Backlog</h3>
+                        <hr class="custom-hr" />
+                        <div class="task-list"></div>
+                    </div>
+
+                    <div class="task-column" id="doing">
+                        <h3>✔ Doing</h3>
+                        <hr class="custom-hr" />
+                        <div class="task-list"></div>
+                    </div>
+
+                    <div class="task-column" id="done">
+                        <h3>✔ Done</h3>
+                        <hr class="custom-hr" />
+                        <div class="task-list"></div>
+                    </div>
+
+                    <div class="task-column" id="discard">
+                        <h3>✔ Won't Do</h3>
+                        <hr class="custom-hr" />
+                        <div class="task-list"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="error-container"></div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="../../static/js/jquery-3.7.1.slim.min.js"></script>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+    <script src="../../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/js/body.js"></script>
+    <title>body</title>
+</head>
+<body>
+    <th:block th:fragment="main-layout (content)">
+        <header id="mainHeader">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                <a class="navbar-brand" href="#">Hidden brand</a>
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+            <button id="hideButton">Скрыть Header</button>
+        </header>
+
+        <main>
+            <br>
+            <br>
+            <br>
+
+            <div th:replace="${content}"></div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+
+                    </div>
+                    <div class="col">
+                        <h2>Контакты</h2>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="">flexikanban@gmail.com</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="">8 (888) 888 88-88</a></p>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h2>Основная информация</h2>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="">О нас</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="">Q&A</a></p>
+                    </div>
+                    <div class="col">
+                        <h2>Документы</h2>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/pdf/user_agreement" target="_blank">Пользовательское соглашение</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/pdf/personal_data_processing_policy" target="_blank">Политика о обработке персональных данных</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </th:block>
+</body>
+</html>

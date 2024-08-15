@@ -1,0 +1,24 @@
+.container h2 {
+    margin-top: 0;
+}
+.container form {
+    display: flex;
+    flex-direction: column;
+}
+.container form input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+.container form button {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.container form button:hover {
+    background-color: #218838;
+}

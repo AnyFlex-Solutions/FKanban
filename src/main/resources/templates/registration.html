@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
+  <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
+  <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+  <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <script type="text/javascript" th:src="@{/js/body.js}"></script>
+  <script type="text/javascript" th:src="@{/js/registration.js}"></script>
+  <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+  <title>Регистрация</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+  <link href="../static/css/registration.css" th:href="@{/css/registration.css}" rel="stylesheet" />
+</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
+<div th:fragment="content" class="myClass">
+  <div class="container">
+    <h2>Регистрация</h2>
+    <form id="registrationForm">
+      <label for="name">Имя</label><input type="text" id="name" name="name" placeholder="Name" required>
+      <label for="email">Почта</label><input type="email" id="email" name="email" placeholder="Email" required>
+      <label for="password">Пароль</label><input type="password" id="password" name="password" placeholder="Password" required>
+      <button type="submit">Зарегестрироваться</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
+
