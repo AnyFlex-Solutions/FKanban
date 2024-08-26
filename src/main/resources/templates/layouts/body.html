@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="../../static/js/jquery-3.7.1.slim.min.js"></script>
@@ -34,6 +34,14 @@
                 </form>
             </div>
             <button id="hideButton">Скрыть Header</button>
+
+            <div class="button-groups" sec:authorize="#{isAnonymous()}">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/api/page/regiser}">Register</a>
+            </div>
+            <div class="button-groups" sec:authorize="#{isAuthenticated()}">
+                <a th:href="@{/logout}">Logout</a>
+            </div>
         </header>
 
         <main>
@@ -47,24 +55,24 @@
         <footer>
             <div class="container">
                 <div class="row">
-                    <div class="col">
-
+                    <div class="col form_img">
+                        <img th:src="@{/img/logo.jpg}" alt="Лого" />
                     </div>
                     <div class="col">
-                        <h2>Контакты</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="">flexikanban@gmail.com</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="">8 (888) 888 88-88</a></p>
+                        <h2 class="h2">Контакты</h2>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="mailto:flexikanban@gmail.com">flexikanban@gmail.com</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="tel:+78888888888">8 (888) 888 88-88</a></p>
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="col">
-                        <h2>Основная информация</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="">О нас</a></p>
+                        <h2 class="h2">Основная информация</h2>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/about-us">О нас</a></p>
                         <p class="pfooter"> &#183; <a class="afooter noni" href="">Q&A</a></p>
                     </div>
                     <div class="col">
-                        <h2>Документы</h2>
+                        <h2 class="h2">Документы</h2>
                         <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/pdf/user_agreement" target="_blank">Пользовательское соглашение</a></p>
                         <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/pdf/personal_data_processing_policy" target="_blank">Политика о обработке персональных данных</a></p>
                     </div>

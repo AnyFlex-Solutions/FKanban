@@ -1,9 +1,11 @@
 package com.fkanban.fkanban.kanbans;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -54,8 +56,12 @@ public class KanbanController {
 
     @PostMapping("/new")
     @ResponseBody
-    public Kanban createKanban(@RequestBody Kanban kanban) {
-        return kanbanService.saveKanban(kanban);
+    public ResponseEntity<?> createKanban(@Valid @RequestBody Kanban kanban, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Title cannot be empty!");
+        }
+
+        return ResponseEntity.ok(kanbanService.saveKanban(kanban));
     }
 
     @GetMapping("")

@@ -3,7 +3,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
     <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
     <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="../static/css/login.css" th:href="@{/css/login.css}" rel="stylesheet" />
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <script type="text/javascript" th:src="@{/js/body.js}"></script>
     <script type="text/javascript" th:src="@{/js/login.js}"></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
@@ -15,23 +17,50 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
 <div th:fragment="content" class="myClass">
-    <div class="container">
-        <h2>Вход</h2>
-        <h1>Please Log In</h1>
-        <div th:if="${param.error}">
-            Invalid username and password.</div>
-        <div th:if="${param.logout}">
-            You have been logged out.</div>
+    <div class="container centr">
+        <h2 class="h2form">Вход</h2>
+        <div th:if="${param.error}" class="alert alert-danger">
+            Неверное имя или пароль.</div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            Вы вышли из системы.</div>
+        <div id="error-message" class="alert alert-danger" style="display:none; visibility: hidden"></div>
         <form th:action="@{/login}" method="post">
-            <div>
-                <input type="email" name="username" placeholder="Email"/>
+            <div class="form-group">
+                <label for="username">Почта</label>
+                <input type="email" name="username" id="username" placeholder="Почта" required/>
             </div>
-            <div>
-                <input type="password" name="password" placeholder="Password"/>
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <div class="password-group">
+                    <input type="password" name="password" id="password" placeholder="Пароль" required/>
+                    <button class="unmask" type="button"></button>
+                </div>
             </div>
-            <input type="submit" value="Log in" />
-            <p class="pfooter"> Если у Вас нет аккаунта зарегистрируйтесь перейдя по этой <a class="noni" href="http://localhost:8090/api/page/registration">ссылке</a>.</p>
+            <p class="pform centr">Если Вы забыли пароль, то измените перейдя по этой <a class="noni" id="forgotPasswordBtn">ссылке</a>.</p>
+
+            <button type="submit" class="button-1">Войти</button>
+            <p class="pform centr">Если у Вас нет аккаунта, зарегистрируйтесь перейдя по этой <a class="noni" href="http://localhost:8090/api/page/registration">ссылке</a>.</p>
         </form>
+    </div>
+
+    <!-- Модальное окно для сообщений -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Сообщение</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalMessage">
+                    <!-- Сообщение будет вставляться сюда -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-button">Закрыть</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

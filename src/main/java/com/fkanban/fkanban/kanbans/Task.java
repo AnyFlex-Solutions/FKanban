@@ -1,5 +1,6 @@
 package com.fkanban.fkanban.kanbans;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "kanban_id", nullable = false)
+    @JsonBackReference
     private Kanban kanban;
 }

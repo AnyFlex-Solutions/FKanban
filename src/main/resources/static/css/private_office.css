@@ -1,0 +1,13 @@
+/* Стиль для успеха */
+.modal-success .modal-content {
+    background-color: #d4edda;
+    border-color: #465a4d;
+    color: #155724;
+}
+
+/* Стиль для ошибки */
+.modal-error .modal-content {
+    background-color: #f8d7da;
+    border-color: #936e70;
+    color: #721c24;
+}

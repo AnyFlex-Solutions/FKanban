@@ -22,6 +22,10 @@ public class MyErrorController implements ErrorController {
                 return "errors/403";
             } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
                 return "errors/500";
+            } else if (statusCode == HttpStatus.METHOD_NOT_ALLOWED.value()) {
+                return "errors/405";
+            } else if (statusCode == HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()) {
+                return "errors/415";
             }
         }
 

@@ -28,16 +28,38 @@ public class RegistrationService {
             throw new IllegalStateException("Email not valid");
         }
 
-        String token = appUserService.signUpUser(new AppUser(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                AppUserRole.USER
-        ));
+        validatePassword(request.getPassword());
 
-        String link = "http://localhost:8090/api/v1/registration/confirm?token=" + token;
-        emailSender.send(request.getEmail(), buildEmail(request.getName(), link));
-        return token;
+        try {
+            String token = appUserService.signUpUser(new AppUser(
+                    request.getName(),
+                    request.getEmail(),
+                    request.getPassword(),
+                    AppUserRole.USER
+            ));
+
+            String link = "http://localhost:8090/api/v1/registration/confirm?token=" + token;
+            emailSender.send(request.getEmail(), buildEmail(request.getName(), link));
+            return token;
+        } catch (IllegalStateException e) {
+            if (e.getMessage().contains("Email already taken")) {
+                throw new IllegalStateException("Почта уже используется");
+            }
+            throw e;
+        }
+    }
+
+    private void validatePassword(String password) {
+        // Минимальная длина пароля
+        if (password.length() < 5) {
+            throw new IllegalStateException("Password must be at least 5 characters long");
+        }
+
+        // Регулярное выражение для проверки допустимых символов
+        String passwordPattern = "^[A-Za-z0-9!@%#&]+$";
+        if (!password.matches(passwordPattern)) {
+            throw new IllegalStateException("Password can only contain letters, numbers, and !@%#& characters");
+        }
     }
 
     @Transactional
@@ -58,7 +80,7 @@ public class RegistrationService {
         confirmationTokenService.setConfirmedAt(token);
         appUserService.enableAppUser((confirmationToken.getAppUser().getEmail()));
 
-        return "redirect:/api/kanban";
+        return "redirect:/api/page/registration/success";
     }
 
     private String buildEmail (String name, String link) {

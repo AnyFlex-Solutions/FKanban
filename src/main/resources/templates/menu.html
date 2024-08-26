@@ -4,7 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
     <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
     <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="../static/css/menu.css" th:href="@{/css/menu.css}" rel="stylesheet" />
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <script type="text/javascript" th:src="@{/js/body.js}"></script>
     <script type="text/javascript" th:src="@{/js/menu.js}"></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
@@ -14,20 +16,44 @@
 </head>
 <body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
 <div th:fragment="content" class="myClass">
-    <h1>Your Kanban Boards</h1>
+    <div class="container centr">
+        <h1>Канбан доски</h1>
 
-    <ul>
-        <li th:each="kanban : ${kanbans}">
-            <a th:href="@{/api/kanban/{id}(id=${kanban.id})}" th:text="${kanban.title}"></a>
-        </li>
-    </ul>
+        <ul class="kanban-list">
+            <li th:each="kanban : ${kanbans}">
+                <a th:href="@{/api/kanban/{id}(id=${kanban.id})}" th:text="${kanban.title}"></a>
+            </li>
+        </ul>
 
-    <h2>Create New Kanban Board</h2>
-    <form id="kanbanForm">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required />
-        <button type="submit" id="submit-button">Create</button>
-    </form>
+        <h2>Создать новую канбан доску</h2>
+        <form id="kanbanForm">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required />
+            </div>
+            <button type="submit" class="button-1" id="submit-button">Создать</button>
+        </form>
+    </div>
+
+    <!-- Модальное окно для сообщений -->
+    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Сообщение</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalMessage">
+                    <!-- Сообщение будет вставляться сюда -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-button">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

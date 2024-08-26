@@ -4,6 +4,7 @@
     <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
     <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <script type="text/javascript" th:src="@{/js/body.js}"></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
@@ -16,64 +17,127 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
     <div th:fragment="content" class="myClass">
-        <!-- Modal -->
-        <div id="editModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Edit Task</h2>
-                <form id="editForm">
-                    <label for="editTitle">Title:</label>
-                    <input type="text" id="editTitle" name="editTitle">
-
-                    <label for="editDescription">Description:</label>
-                    <textarea id="editDescription" name="editDescription"></textarea>
-
-                    <button type="submit" id="saveButton">Save</button>
-                </form>
+        <!-- Edit Task Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content backmodal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Изменить задачу</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <div class="mb-3">
+                                <label for="editTitle" class="form-label">Название:</label>
+                                <input type="text" id="editTitle" name="editTitle" class="form-control" placeholder="Название">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDescription" class="form-label">Описание:</label>
+                                <textarea id="editDescription" name="editDescription" class="form-control" placeholder="Описание"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Закрыть</button>
+                        <button type="submit" id="saveButton" class="btn btn-outline-success">Изменить</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="container" th:name="${kanbanId}" id="kanban-board">
-            <div class="row centr">
-                <form class="input-container">
-                    <div class="fields">
-                        <input id="title" placeholder="title..." />
-                        <input id="description" placeholder="description..." />
+        <!-- Add Task Modal -->
+        <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content backmodal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTaskModalLabel">Добавить задачу</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <input type="submit" id="submit-button" />
-                </form>
+                    <div class="modal-body">
+                        <form id="addForm">
+                            <div class="mb-3">
+                                <label for="titleInput" class="form-label">Название:</label>
+                                <input type="text" id="titleInput" name="titleInput" class="form-control" placeholder="Название">
+                            </div>
+                            <div class="mb-3">
+                                <label for="descriptionInput" class="form-label">Описание:</label>
+                                <textarea id="descriptionInput" name="descriptionInput" class="form-control" placeholder="Описание"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Закрыть</button>
+                        <button type="submit" id="submitButton" class="btn btn-outline-success">Добавить</button>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="row kanb centr">
-                <section class="column-container">
-                    <div class="task-column" id="backlog">
-                        <h3> Backlog</h3>
-                        <hr class="custom-hr" />
-                        <div class="task-list"></div>
-                    </div>
-
-                    <div class="task-column" id="doing">
-                        <h3>✔ Doing</h3>
-                        <hr class="custom-hr" />
-                        <div class="task-list"></div>
-                    </div>
-
-                    <div class="task-column" id="done">
-                        <h3>✔ Done</h3>
-                        <hr class="custom-hr" />
-                        <div class="task-list"></div>
-                    </div>
-
-                    <div class="task-column" id="discard">
-                        <h3>✔ Won't Do</h3>
-                        <hr class="custom-hr" />
-                        <div class="task-list"></div>
-                    </div>
-                </section>
-            </div>
-
+        <!--
+        <div th:name="${kanbanId}" id="kanban-board" class="centr">
             <div class="error-container"></div>
+
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="task-column" id="backlog">
+                        <div class="kanban-header">
+                            <h3>Бэклог</h3>
+                            <button type="button" class="btn btn-primary add-task-button">Добавить</button>
+                        </div>
+                        <hr class="custom-hr">
+                        <div class="task-list"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="task-column" id="doing">
+                        <div class="kanban-header">
+                            <h3>Сделать</h3>
+                            <button type="button" class="btn btn-primary add-task-button">Добавить</button>
+                        </div>
+                        <hr class="custom-hr">
+                        <div class="task-list"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="task-column" id="inProcess">
+                        <div class="kanban-header">
+                            <h3>В процессе</h3>
+                            <button type="button" class="btn btn-primary add-task-button">Добавить</button>
+                        </div>
+                        <hr class="custom-hr">
+                        <div class="task-list"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="task-column" id="done">
+                        <div class="kanban-header">
+                            <h3>Сделано</h3>
+                            <button type="button" class="btn btn-primary add-task-button">Добавить</button>
+                        </div>
+                        <hr class="custom-hr">
+                        <div class="task-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+        <!-- Переключатель методологий -->
+        <div class="btn-group" role="group" aria-label="Methodology Selector">
+            <button type="button" id="kanbanBtn" class="btn btn-outline-primary">Kanban</button>
+            <button type="button" id="kanoBtn" class="btn btn-outline-secondary">Kano</button>
+            <button type="button" id="moscowBtn" class="btn btn-outline-success">MoSCoW</button>
         </div>
+
+        <!-- Контейнер для отрисовки доски -->
+        <div class="error-container"></div>
+        <div id="boardContainer" th:name="${kanbanId}"></div>
     </div>
 </body>
 </html>

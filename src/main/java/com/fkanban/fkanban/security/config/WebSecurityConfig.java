@@ -29,9 +29,14 @@ public class WebSecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/api/v1/registration/**").permitAll()
                                 .requestMatchers("/api/page/registration").permitAll()
+                                .requestMatchers("/api/page/registration/success").permitAll()
                                 .requestMatchers("/api/v1/login").permitAll()
                                 .requestMatchers("/api/pdf/user_agreement").permitAll()
                                 .requestMatchers("/api/pdf/personal_data_processing_policy").permitAll()
+                                .requestMatchers("/api/about-us").permitAll()
+                                .requestMatchers("/img/logo.jpg").permitAll()
+                                .requestMatchers("/img/favicon.ico").permitAll()
+                                .requestMatchers("/api/user/forgot-password-with-email").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->

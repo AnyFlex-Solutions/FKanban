@@ -27,7 +27,7 @@ public class EmailService implements EmailSender {
 
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("Confirm your email");
+            helper.setSubject("Подтвердите действие на сайте FlexiKanban");
             helper.setFrom("flexikanban@gmail.com");
             mailSender.send(mimeMessage);
 

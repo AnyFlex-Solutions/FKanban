@@ -1,24 +1,230 @@
-.container h2 {
-    margin-top: 0;
+* {
+    box-sizing: border-box;
+    list-style: none;
 }
+
+.container {
+    width: 95%;
+    padding: 20px;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
 .container form {
     display: flex;
     flex-direction: column;
 }
-.container form input {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    position: relative;
 }
-.container form button {
-    padding: 10px;
-    background-color: #28a745;
+
+.password-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    position: relative;
+    width: 80%;
+}
+
+.form-group label {
+    width: 20%;
+    min-width: 100px;
+    margin-right: 10px;
+    color: oklch(0.48 0.15 342.19);
+}
+
+.form-group input {
+    width: 80%;
+    padding: 10px 40px 10px 10px;
+    border: 1px solid oklab(0.5 0.19 -0.13);
+    border-radius: 5px;
+    font-size: 16px;
+    color: oklab(0.42 0.16 -0.11);
+    background: oklab(0.42 0.16 -0.11 / 0);
+}
+
+.password-group input {
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    border: 1px solid oklab(0.5 0.19 -0.13);
+    border-radius: 5px;
+    font-size: 16px;
+    color: oklab(0.42 0.16 -0.11);
+    background: oklab(0.42 0.16 -0.11 / 0);
+}
+
+
+@media (max-width: 780px) {
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-group label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .form-group input {
+        width: 100%;
+    }
+
+    .password-group input {
+        width: 100%;
+    }
+}
+
+.pfooter {
+    margin-top: 15px;
+}
+
+.pfooter a {
+    color: oklch(0.74 0.18 341.23);
+    text-decoration: none;
+}
+
+.pform {
+    color: oklch(0.48 0.15 342.19);
+    text-align: center;
+    padding: 1%;
+}
+
+.pform a {
+    color: oklch(0.57 0.19 328.25);
+}
+
+.pform a:hover {
+    color: oklch(0.51 0.02 327.35);
+    text-decoration: none;
+}
+
+.h2form {
+    color: oklch(0.48 0.15 342.19);
+    padding: 0.5%;
+}
+
+label {
+    color: oklch(0.48 0.15 342.19);
+}
+
+.pfooter a:hover {
+    text-decoration: underline;
+    color: oklab(0.76 0.1 -0.09);
+}
+
+.button-1 {
+    --b: 3px;
+    --s: .45em;
+    --color: oklch(0.48 0.15 342.19);
+
+    padding: calc(.5em + var(--s)) calc(.9em + var(--s));
+    color: var(--color);
+    --_p: var(--s);
+    background:
+            conic-gradient(from 90deg at var(--b) var(--b),#0000 90deg,var(--color) 0)
+            var(--_p) var(--_p)/calc(100% - var(--b) - 2*var(--_p)) calc(100% - var(--b) - 2*var(--_p));
+    transition: .3s linear, color 0s, background-color 0s;
+    outline: var(--b) solid #0000;
+    outline-offset: .6em;
+    font-size: 16px;
+
+    border: 0;
+
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-1:hover,
+.button-1:focus-visible{
+    --_p: 0px;
+    outline-color: var(--color);
+    outline-offset: .05em;
+}
+
+.button-1:active {
+    background: var(--color);
     color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
 }
-.container form button:hover {
-    background-color: #218838;
+
+form p { position: relative; }
+
+#password + .unmask {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    font-family: 'fontawesome';
+    font-size: 14px;
+    line-height: 24px;
+    -webkit-appearance: none;
+    outline: none;
+}
+
+#password + .unmask:before {
+    content: "\f06e";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    background: oklch(0.82 0.17 340.77 / 0.25);
+    z-index: 1;
+    color: oklch(0.48 0.15 342.19);
+    border: 2px solid;
+    border-radius: 50%;
+}
+
+#password[type="text"] + .unmask:before {
+    content: "\f070";
+    background: oklch(0.82 0.17 340.77 / 0.25);
+    color: oklch(0.48 0.15 342.19);
+}
+
+#conf-password + .unmask {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 25px;
+    height: 25px;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    font-family: 'fontawesome';
+    font-size: 14px;
+    line-height: 24px;
+    -webkit-appearance: none;
+    outline: none;
+}
+
+#conf-password + .unmask:before {
+    content: "\f06e";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    background: oklch(0.82 0.17 340.77 / 0.25);
+    z-index: 1;
+    color: oklch(0.48 0.15 342.19);
+    border: 2px solid;
+    border-radius: 50%;
+}
+
+#conf-password[type="text"] + .unmask:before {
+    content: "\f070";
+    background: oklch(0.82 0.17 340.77 / 0.25);
+    color: oklch(0.48 0.15 342.19);
 }

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="../static/css/menu.css" th:href="@{/css/menu.css}" rel="stylesheet" />
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <script type="text/javascript" th:src="@{/js/body.js}"></script>
+    <script type="text/javascript" th:src="@{/js/menu.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+    <title>О нас - FlexiKanban</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'; default-src 'self';">
+</head>
+<body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
+<div th:fragment="content" class="about-us-page">
+    <div class="container">
+        <h1>О нас</h1>
+
+        <section class="company-overview">
+            <h2>FlexiKanban</h2>
+            <p>FlexiKanban предоставляет набор инструментов для проектирования, разработки и сопровождения IT-продуктов. Наша компания предлагает такие решения, как канбан доска, анализ Кано и MoSCoW, которые помогают нашим клиентам эффективно управлять своими проектами и достигать поставленных целей.</p>
+        </section>
+
+        <section class="our-mission">
+            <h2>Наша миссия</h2>
+            <p>Наша миссия — предоставить организациям мощные и гибкие инструменты для управления проектами, которые позволяют эффективно распределять ресурсы, оптимизировать процессы и достигать максимальных результатов.</p>
+        </section>
+
+        <section class="our-values">
+            <h2>Наши ценности</h2>
+            <ul>
+                <li>Ориентация на клиента</li>
+                <li>Инновации</li>
+                <li>Качество</li>
+                <li>Гибкость</li>
+                <li>Эффективность</li>
+            </ul>
+        </section>
+
+        <section class="our-tools">
+            <h2>Наши инструменты</h2>
+            <ul>
+                <li>Канбан доска</li>
+                <li>Анализ Кано</li>
+                <li>MoSCoW анализ</li>
+            </ul>
+        </section>
+
+        <section class="contact-us">
+            <h2>Связаться с нами</h2>
+            <p>Если у вас есть вопросы или предложения, свяжитесь с нами по электронной почте: <a href="mailto:flexikanban@gmail.com">flexikanban@gmail.com</a>.</p>
+        </section>
+    </div>
+</div>
+</body>
+</html>

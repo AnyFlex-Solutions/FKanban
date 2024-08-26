@@ -3,6 +3,7 @@ package com.fkanban.fkanban.appuser;
 import com.fkanban.fkanban.registration.token.ConfirmationToken;
 import com.fkanban.fkanban.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -54,5 +56,45 @@ public class AppUserService implements UserDetailsService {
 
     public int enableAppUser(String email) {
         return appUserRepository.enableAppUser(email);
+    }
+
+    private void validatePassword(String password) {
+        // Минимальная длина пароля
+        if (password.length() < 5) {
+            throw new IllegalStateException("Пароль должен состоять не менее чем из 5 символов.");
+        }
+
+        // Регулярное выражение для проверки допустимых символов
+        String passwordPattern = "^[A-Za-z0-9!@%#&]+$";
+        if (!password.matches(passwordPattern)) {
+            throw new IllegalStateException("Пароль может содержать только латинские буквы, цифры и символы !@%#&");
+        }
+    }
+
+    public void updateUser(UpdateUserRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        AppUser user = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("Пользователь не найден"));
+
+        Optional.ofNullable(request.getNickname())
+                .filter(nickname -> !nickname.isEmpty())
+                .ifPresent(user::setName);
+
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            if (request.getSuccessPassword() != null && !request.getSuccessPassword().isEmpty()) {
+                if (request.getPassword().equals(request.getSuccessPassword())) {
+                    validatePassword(request.getSuccessPassword());
+
+                    user.setPassword(bCryptPasswordEncoder.encode(request.getSuccessPassword()));
+                } else {
+                    throw new IllegalStateException("Пароли не совпадают.");
+                }
+            } else {
+                throw new IllegalStateException("Повторите ввод пароля для проверки коректности.");
+            }
+        }
+
+        appUserRepository.save(user);
     }
 }
