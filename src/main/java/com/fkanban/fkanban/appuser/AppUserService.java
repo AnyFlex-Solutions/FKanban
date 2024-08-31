@@ -97,4 +97,18 @@ public class AppUserService implements UserDetailsService {
 
         appUserRepository.save(user);
     }
+
+    public AppUser findUserByEmail(String email) {
+        return appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User with email " + email + " not found"));
+    }
+
+    public AppUser findById(Long userId) {
+        return appUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " not found"));
+    }
+
+    public Boolean checkUserByEmail(String email) {
+        return appUserRepository.findByEmail(email).isPresent();
+    }
 }

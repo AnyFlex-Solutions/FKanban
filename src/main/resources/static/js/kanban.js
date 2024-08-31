@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     const kanbanId = document.getElementById('boardContainer').getAttribute('name');
 
-    const taskLists = document.querySelectorAll('.task-list');
+    let taskLists = document.querySelectorAll('.task-list');
     const titleInput = document.querySelector('#titleInput');
     const descriptionInput = document.querySelector('#descriptionInput');
     const submitButton = document.querySelector('#submitButton');
@@ -19,6 +19,11 @@ $(document).ready(function() {
     let tasks = [];
     let taskIdToEdit = null; // Сохраняем ID задачи, которую редактируем
     let currentColumn = null; // Сохраняем текущую колонку для добавления задачи
+
+    let urlFetchTasks = `/api/kanban/${kanbanId}/tasks`;
+    let urlEditTask = `/api/kanban/${kanbanId}/tasks/`;
+    let urlSuncTasks = `/api/kanban/${kanbanId}/tasks/sync`;
+    let delurl = '/api/kanban/tasks/';
 
     renderKanbanBoard();
 
@@ -42,31 +47,52 @@ $(document).ready(function() {
     submitButton.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        const filteredTitles = tasks.filter((task) => {
-            return task.title === titleInput.value;
+        const newId = tasks.length;
+        const newTask = {
+            id: newId,
+            title: titleInput.value,
+            description: descriptionInput.value,
+            status: currentColumn // Добавляем задачу в текущую колонку
+        };
+        tasks.push(newTask);
+        createTask(newId, titleInput.value, descriptionInput.value, currentColumn); // Добавляем задачу в UI
+        addTaskModal.hide(); // Закрываем модальное окно после добавления задачи
+
+        fetch(urlFetchTasks, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newTask),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Не удалось загрузить задачу: ${text}`);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                showError('Не удалось загрузить задачу на сервер.');
+            });
+    });
+
+    function DropAndDragActivator() {
+        taskLists.forEach((taskList) => {
+            taskList.addEventListener('dragover', dragOver);
+            taskList.addEventListener('drop', dragDrop);
+
+            // Для каждого элемента задачи (task) внутри списка задач добавляем обработчик dragstart
+            const tasks = taskList.querySelectorAll('.task');
+            tasks.forEach((task) => {
+                task.setAttribute('draggable', true);
+                task.addEventListener('dragstart', dragStart);
+            });
         });
+    }
 
-        if (!filteredTitles.length) {
-            const newId = tasks.length;
-            const newTask = {
-                id: newId,
-                title: titleInput.value,
-                description: descriptionInput.value,
-                status: currentColumn // Добавляем задачу в текущую колонку
-            };
-            tasks.push(newTask);
-            createTask(newId, titleInput.value, descriptionInput.value, currentColumn); // Добавляем задачу в UI
-            addTaskModal.hide(); // Закрываем модальное окно после добавления задачи
-            syncTasks(); // Синхронизация после добавления
-        } else {
-            showError('Названия должны быть уникальными!');
-        }
-    });
-
-    taskLists.forEach((taskList) => {
-        taskList.addEventListener('dragover', dragOver);
-        taskList.addEventListener('drop', dragDrop);
-    });
+    DropAndDragActivator()
 
     function createTask(taskId, title, description, status) {
         try {
@@ -133,13 +159,37 @@ $(document).ready(function() {
             case 'backlog':
                 color = 'rgb(148,95,255)';
                 break;
+            case 'Mandatory':
+                color = 'rgb(148,95,255)';
+                break;
+            case 'Must':
+                color = 'rgb(148,95,255)';
+                break;
             case 'doing':
+                color = 'rgb(120,204,224)';
+                break;
+            case 'Basic':
+                color = 'rgb(120,204,224)';
+                break;
+            case 'Should':
                 color = 'rgb(120,204,224)';
                 break;
             case 'inProcess':
                 color = 'rgb(211,147,86)';
                 break;
+            case 'Attractive':
+                color = 'rgb(211,147,86)';
+                break;
+            case 'Could':
+                color = 'rgb(211,147,86)';
+                break;
             case 'done':
+                color = 'rgb(187,174,99)';
+                break;
+            case 'Indifference':
+                color = 'rgb(187,174,99)';
+                break;
+            case 'Wont':
                 color = 'rgb(187,174,99)';
                 break;
             default:
@@ -156,20 +206,43 @@ $(document).ready(function() {
 
     function dragStart() {
         elementBeingDragged = this;
+        console.log(elementBeingDragged);
     }
 
     function dragOver(e) {
         e.preventDefault();
+        console.log(2)
     }
 
-    function dragDrop() {
+    async function dragDrop() {
         const columnId = this.parentNode.id;
         elementBeingDragged.firstChild.style.backgroundColor = addColor(columnId);
         this.append(elementBeingDragged);
         const taskId = elementBeingDragged.getAttribute('task-id');
-        const task = tasks.find(t => t.id == taskId);
-        task.status = columnId;
-        syncTasks(); // Sync immediately after dragging a task
+        console.log(taskId)
+
+        if (taskId !== null) {
+            const task = tasks.find(t => t.id == taskId);
+            task.status = columnId;
+            console.log(task)
+
+            try {
+                const response = await fetch(urlEditTask + taskId, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(task),
+                });
+
+                if (!response.ok) {
+                    showError('Ошибка при изменении задачи.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Ошибка при изменении задачи.');
+            }
+        }
     }
 
     function showError(message) {
@@ -186,17 +259,36 @@ $(document).ready(function() {
     function deleteTask() {
         const headerTitle = this.parentNode.firstChild.textContent;
 
-        const filteredTasks = tasks.filter((task) => {
-            return task.title === headerTitle;
-        });
+        const taskToDelete = tasks.find((task) => task.title === headerTitle);
 
-        tasks = tasks.filter((task) => {
-            return task !== filteredTasks[0];
-        });
+        if (!taskToDelete) {
+            console.error('Task not found');
+            return;
+        }
 
-        this.parentNode.parentNode.remove();
-        syncTasks(); // Sync immediately after deleting a task
+        const taskId = taskToDelete.id;
+
+        fetch(delurl + taskId, {
+            method: 'DELETE',
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Failed to delete task: ${text}`);
+                    });
+                }
+
+                tasks = tasks.filter((task) => task.id !== taskId);
+                this.parentNode.parentNode.remove();
+
+                //syncTasks();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                showError('Failed to delete task from server.');
+            });
     }
+
 
     // Функции для отрисовки досок
     function renderKanbanBoard() {
@@ -257,9 +349,9 @@ $(document).ready(function() {
                 <div id="kano-board" class="centr">
                     <div class="row mb-4">
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="basic">
+                            <div class="task-column" id="Mandatory">
                                 <div class="kanban-header">
-                                    <h3>Основные</h3>
+                                    <h3>Обязательные</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -267,9 +359,9 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="performance">
+                            <div class="task-column" id="Basic">
                                 <div class="kanban-header">
-                                    <h3>Производительность</h3>
+                                    <h3>Базовые</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -277,9 +369,9 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="excitement">
+                            <div class="task-column" id="Attractive">
                                 <div class="kanban-header">
-                                    <h3>Возбуждение</h3>
+                                    <h3>Привлекательные</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -287,7 +379,7 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="indifferent">
+                            <div class="task-column" id="Indifference">
                                 <div class="kanban-header">
                                     <h3>Безразличие</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
@@ -310,9 +402,9 @@ $(document).ready(function() {
                 <div id="moscow-board" class="centr">
                     <div class="row mb-4">
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="mustHave">
+                            <div class="task-column" id="Must">
                                 <div class="kanban-header">
-                                    <h3>Must Have</h3>
+                                    <h3>Обязаны</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -320,9 +412,9 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="shouldHave">
+                            <div class="task-column" id="Should">
                                 <div class="kanban-header">
-                                    <h3>Should Have</h3>
+                                    <h3>Должны</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -330,9 +422,9 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="couldHave">
+                            <div class="task-column" id="Could">
                                 <div class="kanban-header">
-                                    <h3>Could Have</h3>
+                                    <h3>Могли бы</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -340,9 +432,9 @@ $(document).ready(function() {
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-6 mb-4">
-                            <div class="task-column" id="wontHave">
+                            <div class="task-column" id="Wont">
                                 <div class="kanban-header">
-                                    <h3>Won't Have</h3>
+                                    <h3>Не будет</h3>
                                     <button type="button" class="btn btn-primary add-task-button">Добавить</button>
                                 </div>
                                 <hr class="custom-hr">
@@ -369,20 +461,40 @@ $(document).ready(function() {
         }
     }
 
-    // Функции для выполнения после отрисовки досок
-    function executeKanbanScripts() {
+    function GlobalReactivation() {
+        taskLists = document.querySelectorAll('.task-list');
+
         addTasks();
         attachAddTaskButtonEvents();
+        DropAndDragActivator();
+    }
+
+    // Функции для выполнения после отрисовки досок
+    function executeKanbanScripts() {
+        urlFetchTasks = `/api/kanban/${kanbanId}/tasks`;
+        urlEditTask = `/api/kanban/${kanbanId}/tasks/`;
+        urlSuncTasks = `/api/kanban/${kanbanId}/tasks/sync`;
+        delurl = `/api/kanban/tasks/`;
+
+        GlobalReactivation();
     }
 
     function executeKanoScripts() {
-        addTasks();
-        attachAddTaskButtonEvents();
+        urlFetchTasks = `/api/kanban/${kanbanId}/kano-tasks`;
+        urlEditTask = `/api/kanban/${kanbanId}/kano-tasks/`;
+        urlSuncTasks = `/api/kanban/${kanbanId}/kano-tasks/sync`;
+        delurl = `/api/kanban/kano-tasks/`;
+
+        GlobalReactivation();
     }
 
     function executeMoSCoWScripts() {
-        addTasks();
-        attachAddTaskButtonEvents();
+        urlFetchTasks = `/api/kanban/${kanbanId}/moscow-tasks`;
+        urlEditTask = `/api/kanban/${kanbanId}/moscow-tasks/`;
+        urlSuncTasks = `/api/kanban/${kanbanId}/moscow-tasks/sync`;
+        delurl = `/api/kanban/moscow-tasks/`;
+
+        GlobalReactivation();
     }
 
     // Добавление слушателей событий для кнопок переключения
@@ -414,7 +526,7 @@ $(document).ready(function() {
 
     async function fetchTasks() {
         try {
-            const response = await fetch(`/api/kanban/${kanbanId}/tasks`);
+            const response = await fetch(urlFetchTasks);
             tasks = await response.json();
             tasks.forEach((task) => createTask(task.id, task.title, task.description, task.status));
         } catch (error) {
@@ -431,7 +543,7 @@ $(document).ready(function() {
             task.description = editDescriptionInput.value;
 
             try {
-                const response = await fetch(`/api/kanban/${kanbanId}/tasks/${taskIdToEdit}`, {
+                const response = await fetch(urlEditTask + taskIdToEdit, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -448,18 +560,22 @@ $(document).ready(function() {
                     // Закрываем модальное окно
                     editModal.hide();
                 } else {
-                    showError('Failed to update the task.');
+                    showError('Ошибка при изменении задачи.');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showError('Failed to update the task.');
+                showError('Ошибка при изменении задачи.');
             }
         }
     });
 
-    async function syncTasks() {
+    //const intervalId = setInterval(function() {
+    //    syncTasks();
+    //}, 5000)
+
+    /*async function syncTasks() {
         try {
-            const response = await fetch(`/api/kanban/${kanbanId}/tasks/sync`, {
+            const response = await fetch(urlSuncTasks, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -472,17 +588,16 @@ $(document).ready(function() {
                 const jsonResponse = textResponse ? JSON.parse(textResponse) : null; // Парсим JSON только если не пусто
 
                 if (!jsonResponse) {
-                    console.warn('No JSON response received.');
+                    console.warn('Ответ в формате JSON не получен.');
                 }
             } else {
                 const errorText = await response.text();
-                throw new Error(`Failed to sync tasks: ${errorText}`);
+                throw new Error(`Не удалось синхронизировать задачи: ${errorText}`);
             }
         } catch (error) {
             console.error('Error:', error);
-            showError('Failed to sync tasks with the server.');
+            showError('Не удалось синхронизировать задачи с сервером.');
         }
-    }
-
+    }*/
 
 });

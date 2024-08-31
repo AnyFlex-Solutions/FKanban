@@ -22,6 +22,9 @@
         <ul class="kanban-list">
             <li th:each="kanban : ${kanbans}">
                 <a th:href="@{/api/kanban/{id}(id=${kanban.id})}" th:text="${kanban.title}"></a>
+                <button class="btn btn-danger delete-kanban-button" th:data-kanban-id="${kanban.id}" th:data-kanban-title="${kanban.title}">
+                    <i class="fa fa-trash"></i>
+                </button>
             </li>
         </ul>
 
@@ -33,6 +36,43 @@
             </div>
             <button type="submit" class="button-1" id="submit-button">Создать</button>
         </form>
+
+        <h2>Пригласить пользователя в Канбан доску</h2>
+        <div class="error-container"></div>
+        <button type="button" class="button-1 centr add-user-button">Пригласить пользователя</button>
+    </div>
+
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content backmodal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inviteModalLabel">Пригласить пользователя</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addForm">
+                        <div class="mb-3">
+                            <label for="inviteeEmail" class="form-label">Email пользователя:</label>
+                            <input type="email" id="inviteeEmail" name="inviteeEmail" class="form-control" placeholder="Email пользователя">
+                        </div>
+                        <div class="mb-3">
+                            <label for="kanbanName" class="form-label">Выберите доску:</label>
+                            <select id="kanbanName" class="form-select form-select-sm" aria-label=".form-select-sm example">
+                                <option th:value="${kanban.id}" th:each="kanban : ${kanbans}">
+                                    <th:block th:text="${kanban.title}"></th:block>
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Закрыть</button>
+                    <button type="submit" id="saveButton" class="btn btn-outline-success">Отправить приглашение</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Модальное окно для сообщений -->
@@ -50,6 +90,27 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-button">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div class="modal fade" id="deleteKanbanModal" tabindex="-1" role="dialog" aria-labelledby="deleteKanbanModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteKanbanModalLabel">Подтверждение удаления</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Вы уверены, что хотите удалить доску с названием "<span id="kanbanTitle"></span>"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Удалить</button>
                 </div>
             </div>
         </div>

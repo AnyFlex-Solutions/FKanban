@@ -139,7 +139,7 @@ li a:hover {
 }
 
 input:active {
-    box-shadow: 2px 2px 15px #8707ff inset;
+    box-shadow: 2px 2px 15px rgba(135, 7, 255, 0.05) inset;
 }
 
 /* Стиль для успеха */
@@ -154,4 +154,17 @@ input:active {
     background-color: #f8d7da;
     border-color: #936e70;
     color: #721c24;
+}
+
+/* Modal styles */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+}
+
+.backmodal {
+    background: oklch(0.89 0.02 309.7);
+    color: oklch(0.49 0.06 331.04);
 }

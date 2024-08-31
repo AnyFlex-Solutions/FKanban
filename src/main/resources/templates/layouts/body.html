@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="../../static/js/jquery-3.7.1.slim.min.js"></script>
@@ -11,38 +11,22 @@
 </head>
 <body>
     <th:block th:fragment="main-layout (content)">
-        <header id="mainHeader">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                <a class="navbar-brand" href="#">Hidden brand</a>
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
+        <nav id="mainHeader" class="py-2 bg-light border-bottom">
+            <div class="container d-flex flex-wrap">
+                <ul class="nav me-auto">
+                    <li class="nav-item"><a th:href="@{/api/kanban/menu}" class="nav-link link-dark px-2"><img th:src="@{/img/logo.jpg}" alt="Лого" /></a></li>
+                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/kanban/menu}" class="nav-link link-dark px-2 active" aria-current="page">Меню</a></li>
+                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/private-office}" class="nav-link link-dark px-2">Личный кабинет</a></li>
+                    <li class="nav-item"><a th:href="@{/api/about-us}" class="nav-link link-dark px-2">О нас</a></li>
+                    <li class="nav-item"><button id="hideButton">Скрыть Header</button></li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                <ul class="nav">
+                    <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item"><a th:href="@{/login}" class="nav-link link-dark px-2">Войти</a></li>
+                    <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item"><a th:href="@{/api/page/registration}" class="nav-link link-dark px-2">Зарегистрироваться</a></li>
+                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/logout}" class="nav-link link-dark px-2">Выйти</a></li>
+                </ul>
             </div>
-            <button id="hideButton">Скрыть Header</button>
-
-            <div class="button-groups" sec:authorize="#{isAnonymous()}">
-                <a th:href="@{/login}">Login</a>
-                <a th:href="@{/api/page/regiser}">Register</a>
-            </div>
-            <div class="button-groups" sec:authorize="#{isAuthenticated()}">
-                <a th:href="@{/logout}">Logout</a>
-            </div>
-        </header>
+        </nav>
 
         <main>
             <br>
@@ -56,25 +40,24 @@
             <div class="container">
                 <div class="row">
                     <div class="col form_img">
-                        <img th:src="@{/img/logo.jpg}" alt="Лого" />
+                        <a th:href="@{/api/kanban/menu}"><img th:src="@{/img/logo.jpg}" alt="Лого" /></a>
                     </div>
                     <div class="col">
                         <h2 class="h2">Контакты</h2>
                         <p class="pfooter"> &#183; <a class="afooter noni" href="mailto:flexikanban@gmail.com">flexikanban@gmail.com</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="tel:+78888888888">8 (888) 888 88-88</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" href="tel:+79680219427">8 (968) 021 94-27</a></p>
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="col">
                         <h2 class="h2">Основная информация</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/about-us">О нас</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="">Q&A</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/about-us}">О нас</a></p>
                     </div>
                     <div class="col">
                         <h2 class="h2">Документы</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/pdf/user_agreement" target="_blank">Пользовательское соглашение</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="http://localhost:8090/api/pdf/personal_data_processing_policy" target="_blank">Политика о обработке персональных данных</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/pdf/user_agreement}" target="_blank">Пользовательское соглашение</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/pdf/personal_data_processing_policy}" target="_blank">Политика о обработке персональных данных</a></p>
                     </div>
                 </div>
             </div>

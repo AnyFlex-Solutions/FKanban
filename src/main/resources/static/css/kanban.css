@@ -105,3 +105,8 @@
     background: oklch(0.89 0.02 309.7);
     color: oklch(0.49 0.06 331.04);
 }
+
+.btn-group {
+    right: 2%;
+    left: 2%;
+}
