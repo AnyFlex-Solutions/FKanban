@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FKanbanApplicationTests {
+class
+
+FKanbanApplicationTests {
 
     @Test
     void contextLoads() {

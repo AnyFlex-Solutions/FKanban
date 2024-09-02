@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -25,6 +28,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Используем новый способ отключения CSRF
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("*")); // Настройте по вашему усмотрению
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    config.setAllowedHeaders(List.of("*"));
+                    return config;
+                }))
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/api/v1/registration/**").permitAll()
@@ -62,7 +72,11 @@ public class WebSecurityConfig {
                 "/css/**",
                 "/js/**",
                 "/images/**",
-                "/pdf/**"
+                "/pdf/**",
+                "/v2/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-resources/**",
+                "/v2/api-docs/**"
         );
     }
 

@@ -26,6 +26,8 @@ public class MyErrorController implements ErrorController {
                 return "errors/405";
             } else if (statusCode == HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()) {
                 return "errors/415";
+            } else if (statusCode == HttpStatus.BAD_REQUEST.value()) {
+                return "errors/400";
             }
         }
 
