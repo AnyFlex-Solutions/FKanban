@@ -1,0 +1,268 @@
+openapi: 3.0.3
+info:
+  title: Kano API
+  description: Документация по API для контроллера Kano
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8090/api/kanban
+    description: Основной сервер
+
+paths:
+  /{KanbanId}/kano-tasks:
+    get:
+      summary: Показать все задачи на доске анализа Kano
+      description: Возвращает список задач с доски анализа Kano
+      parameters:
+        - name: KanbanId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: "ID канбан доски"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: object
+                example: {"id":3,"title":"ыва","description":"ввв","status":"Mandatory"}
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /{kanbanId}/kano-tasks:
+    post:
+      summary: Создаёт задачу
+      description: Возвращает страницу регистрации.
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: string
+                example: 'registration'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/page/registration/success:
+    get:
+      summary: Показать страницу успеха регистрации
+      description: Возвращает страницу успешной регистрации.
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: string
+                example: 'registrationSuccess'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/private-office:
+    get:
+      summary: Получить страницу личного кабинета
+      description: Возвращает страницу личного кабинета, если пользователь аутентифицирован; в противном случае перенаправляет на страницу входа в систему.
+      security:
+        - httpBasic: [ ]
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: string
+                example: 'private_office'
+        '302':
+          description: Перенаправление на страницу входа в систему
+          headers:
+            Location:
+              description: URL-адрес для перенаправления
+              schema:
+                type: string
+                example: '/login'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Базовая аутентификация HTTP. Работает через `HTTP` и `HTTPS`.
+
+  responses:
+    NotFound:
+      description: Страница не найдена
+      content:
+        text/html:
+          schema:
+            type: string
+            example: |
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+                <script type="text/javascript" src="/js/jquery-3.7.1.slim.min.js"></script>
+                <link href="/css/style.css" rel="stylesheet" />
+                <link href="/css/bootstrap.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="/js/body.js"></script>
+                <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
+                <title>Ошибка 404</title>
+                <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+                <link href="/css/registrationSuccess.css" rel="stylesheet" />
+              </head>
+              <body>
+                <div class="container">
+                  <h2>Ошибка 404 - Страница не найдена</h2>
+                  <p>Запрашиваемая страница не существует.</p>
+                  <a href="/api/kanban/menu">Вернуться на главную</a>
+                </div>
+              </body>
+              </html>
+
+    Forbidden:
+      description: Доступ запрещен
+      content:
+        text/html:
+          schema:
+            type: string
+            example: |
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+                <script type="text/javascript" src="/js/jquery-3.7.1.slim.min.js"></script>
+                <link href="/css/style.css" rel="stylesheet" />
+                <link href="/css/bootstrap.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="/js/body.js"></script>
+                <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
+                <title>Ошибка 403</title>
+                <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+                <link href="/css/registrationSuccess.css" rel="stylesheet" />
+              </head>
+              <body>
+                <div class="container">
+                  <h2>Ошибка 403 - Доступ запрещен</h2>
+                  <p>У вас нет прав для доступа к этой странице.</p>
+                  <a href="/api/kanban/menu">Вернуться на главную</a>
+                </div>
+              </body>
+              </html>
+
+    MethodNotAllowed:
+      description: Метод не поддерживается
+      content:
+        text/html:
+          schema:
+            type: string
+            example: |
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+                <script type="text/javascript" src="/js/jquery-3.7.1.slim.min.js"></script>
+                <link href="/css/style.css" rel="stylesheet" />
+                <link href="/css/bootstrap.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="/js/body.js"></script>
+                <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
+                <title>Ошибка 405</title>
+                <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+                <link href="/css/registrationSuccess.css" rel="stylesheet" />
+              </head>
+              <body>
+                <div class="container">
+                  <h2>Ошибка 405 - Метод запроса не поддерживается.</h2>
+                  <p>Запрашиваемая страница не существует.</p>
+                  <a href="/api/kanban/menu">Вернуться на главную</a>
+                </div>
+              </body>
+              </html>
+
+    UnsupportedMediaType:
+      description: Неподдерживаемый тип носителя
+      content:
+        text/html:
+          schema:
+            type: string
+            example: |
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+                <script type="text/javascript" src="/js/jquery-3.7.1.slim.min.js"></script>
+                <link href="/css/style.css" rel="stylesheet" />
+                <link href="/css/bootstrap.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="/js/body.js"></script>
+                <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
+                <title>Ошибка 415</title>
+                <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+                <link href="/css/registrationSuccess.css" rel="stylesheet" />
+              </head>
+              <body>
+                <div class="container">
+                  <h2>Ошибка 415 - Неподдерживаемый тип носителя.</h2>
+                  <p>Формат содержимого не поддерживается сервером.</p>
+                  <a href="/api/kanban/menu">Вернуться на главную</a>
+                </div>
+              </body>
+              </html>
+
+    InternalServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        text/html:
+          schema:
+            type: string
+            example: |
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+                <script type="text/javascript" src="/js/jquery-3.7.1.slim.min.js"></script>
+                <link href="/css/style.css" rel="stylesheet" />
+                <link href="/css/bootstrap.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="/js/body.js"></script>
+                <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
+                <title>Ошибка 500</title>
+                <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+                <link href="/css/registrationSuccess.css" rel="stylesheet" />
+              </head>
+              <body>
+                <div class="container">
+                  <h2>Ошибка 500 - Внутренняя ошибка сервера</h2>
+                  <p>На сервере произошла ошибка. Пожалуйста, попробуйте позже.</p>
+                  <a href="/api/kanban/menu">Вернуться на главную</a>
+                </div>
+              </body>
+              </html>
