@@ -25,10 +25,11 @@ paths:
         '200':
           description: Success
           content:
-            text/html:
+            application/json:
               schema:
-                type: object
-                example: {"id":3,"title":"ыва","description":"ввв","status":"Mandatory"}
+                type: array
+                items:
+                  $ref: '#/components/schemas/KanoTask'
         '400':
           $ref: '#/components/responses/BadRequest'
         '403':
@@ -45,67 +46,161 @@ paths:
   /{kanbanId}/kano-tasks:
     post:
       summary: Создаёт задачу
-      description: Возвращает страницу регистрации.
+      description: Возвращает результат ответа о создании.
+      parameters:
+        - name: KanbanId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: "ID канбан доски"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KanoTask'
+        required: true
       responses:
         '200':
           description: Success
           content:
-            text/html:
+            application/json:
               schema:
-                type: string
-                example: 'registration'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: '#/components/schemas/KanoTask'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /api/page/registration/success:
-    get:
-      summary: Показать страницу успеха регистрации
-      description: Возвращает страницу успешной регистрации.
+  /{kanbanId}/kano-tasks/{taskId}:
+    put:
+      summary: Изменяет задачу
+      description: Возвращает результат ответа о изменении.
+      parameters:
+        - name: KanbanId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: "ID канбан доски"
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: "ID задачи"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KanoTask'
+        required: true
       responses:
         '200':
           description: Success
           content:
-            text/html:
+            application/json:
               schema:
-                type: string
-                example: 'registrationSuccess'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: '#/components/schemas/KanoTask'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /api/private-office:
-    get:
-      summary: Получить страницу личного кабинета
-      description: Возвращает страницу личного кабинета, если пользователь аутентифицирован; в противном случае перенаправляет на страницу входа в систему.
-      security:
-        - httpBasic: [ ]
+  /kano-tasks/{taskId}:
+    delete:
+      summary: Удаляет задачу
+      description: Возвращает результат ответа об удалении.
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: "ID задачи"
       responses:
         '200':
           description: Success
           content:
             text/html:
               schema:
-                type: string
-                example: 'private_office'
-        '302':
-          description: Перенаправление на страницу входа в систему
-          headers:
-            Location:
-              description: URL-адрес для перенаправления
-              schema:
-                type: string
-                example: '/login'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                type: boolean
+                example: True
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /{kanbanId}/kano-tasks/sync:
+    post:
+      summary: Проверка на изменения
+      description: Обновляет данные по всем задачам.
+      parameters:
+        - name: kanbanId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+          description: "ID канбан доски"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: массив данных о задачах
+              type: array
+              items:
+                $ref: '#/components/schemas/KanoTask'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
@@ -116,7 +211,59 @@ components:
       scheme: basic
       description: Базовая аутентификация HTTP. Работает через `HTTP` и `HTTPS`.
 
+  schemas:
+    KanoTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID задачи
+        title:
+          type: string
+          description: Название задачи
+        description:
+          type: string
+          description: Тело задачи
+        status:
+          type: string
+          description: Статус задачи
+      required:
+        - id
+        - title
+        - description
+        - status
+
   responses:
+    BadRequest:
+      description: Неверный запрос
+      content:
+        text/html:
+          schema:
+            type: string
+            example: |
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+                <script type="text/javascript" src="/js/jquery-3.7.1.slim.min.js"></script>
+                <link href="/css/style.css" rel="stylesheet" />
+                <link href="/css/bootstrap.min.css" rel="stylesheet" />
+                <script type="text/javascript" src="/js/body.js"></script>
+                <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
+
+                <title>Ошибка 400</title>
+                <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+                <link href="/css/registrationSuccess.css" rel="stylesheet" />
+              </head>
+              <body>
+                <div class="container">
+                  <h2>Ошибка 400 - Неправильный запрос</h2>
+                  <p>Обращение некорректно.</p>
+                  <a href="/api/kanban/menu">Вернуться на главную</a>
+                </div>
+              </body>
+              </html>
+
     NotFound:
       description: Страница не найдена
       content:

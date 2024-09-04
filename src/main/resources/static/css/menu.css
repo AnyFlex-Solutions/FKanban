@@ -43,7 +43,7 @@ h1, h2 {
     margin-bottom: 20px;
 }
 
-ul {
+.ul {
     font-family: 'Gloria Hallelujah', cursive;
     font-size: 1.4rem;
     list-style-position: inside;
@@ -56,29 +56,29 @@ ul {
     border-radius: 0.1rem;
 }
 
-li {
+.li {
     padding: 0 0 0 1rem;
 }
 
-li:not(:last-child) {
+.li:not(:last-child) {
     border-bottom: 1px solid lightblue;
 }
 
-li:first-child {
+.li:first-child {
     margin-top: 1rem;
 }
 
-li:last-child {
+.li:last-child {
     margin-bottom: 1rem;
 }
 
-li a {
+.li a {
     margin-left: 3%;
     color: oklch(0.74 0.18 341.23);
     text-decoration: none;
 }
 
-li a:hover {
+.li a:hover {
     color: oklch(0.52 0.16 342.13);
     text-decoration: none;
 }

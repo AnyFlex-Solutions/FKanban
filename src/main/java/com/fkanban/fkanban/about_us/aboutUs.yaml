@@ -138,10 +138,29 @@ paths:
         '200':
           description: Данные успешно обновлены
           content:
-            text/plain:
+            text/html:
               schema:
                 type: string
-                example: "Данные успешно обновлены."
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /kontakts:
+    get:
+      summary: Страница "Контакты"
+
+      responses:
+        '200':
+          description: Получение html страницы "Контакты"
+          content:
+            text/html:
+              schema:
+                type: string
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':

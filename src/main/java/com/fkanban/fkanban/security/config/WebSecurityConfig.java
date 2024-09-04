@@ -44,6 +44,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/pdf/user_agreement").permitAll()
                                 .requestMatchers("/api/pdf/personal_data_processing_policy").permitAll()
                                 .requestMatchers("/api/about-us").permitAll()
+                                .requestMatchers("/api/kontakts").permitAll()
                                 .requestMatchers("/img/logo.jpg").permitAll()
                                 .requestMatchers("/img/favicon.ico").permitAll()
                                 .requestMatchers("/api/user/forgot-password-with-email").permitAll()

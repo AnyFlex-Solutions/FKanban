@@ -11,4 +11,9 @@ public class AboutUsController {
     public String showLoginPage() {
         return "about_us";
     }
+
+    @GetMapping("/kontakts")
+    public String showKontaktPage() {
+        return "kontakts";
+    }
 }

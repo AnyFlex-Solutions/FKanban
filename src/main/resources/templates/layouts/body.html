@@ -18,6 +18,7 @@
                     <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/kanban/menu}" class="nav-link link-dark px-2 active" aria-current="page">Меню</a></li>
                     <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/private-office}" class="nav-link link-dark px-2">Личный кабинет</a></li>
                     <li class="nav-item"><a th:href="@{/api/about-us}" class="nav-link link-dark px-2">О нас</a></li>
+                    <li class="nav-item"><a th:href="@{/api/kontakts}" class="nav-link link-dark px-2">Контакты</a></li>
                     <li class="nav-item"><button id="hideButton">Скрыть Header</button></li>
                 </ul>
                 <ul class="nav">
@@ -53,6 +54,7 @@
                     <div class="col">
                         <h2 class="h2">Основная информация</h2>
                         <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/about-us}">О нас</a></p>
+                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/kontakts}">Контакты</a></p>
                     </div>
                     <div class="col">
                         <h2 class="h2">Документы</h2>
