@@ -89,8 +89,12 @@ footer {
 
 .afooter {
     font-size: 100%;
-    color: #FEEFFD;
+    color: hsl(304deg 60.74% 94.46%);
     text-decoration: none;
+}
+
+.afooter:hover {
+    color: oklch(0.87 0.11 328.44);
 }
 
 .centr {
@@ -114,5 +118,5 @@ script[nonce~="whatever"] {
 }
 
 img {
-    height: 27px;
+    height: 50px;
 }

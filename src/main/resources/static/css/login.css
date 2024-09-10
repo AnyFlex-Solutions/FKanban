@@ -77,15 +77,6 @@
     }
 }
 
-.pfooter {
-    margin-top: 15px;
-}
-
-.pfooter a {
-    color: oklch(0.74 0.18 341.23);
-    text-decoration: none;
-}
-
 .pform {
     color: oklch(0.48 0.15 342.19);
     text-align: center;
@@ -108,11 +99,6 @@
 
 label {
     color: oklch(0.48 0.15 342.19);
-}
-
-.pfooter a:hover {
-    text-decoration: underline;
-    color: oklab(0.76 0.1 -0.09);
 }
 
 .button-1 {

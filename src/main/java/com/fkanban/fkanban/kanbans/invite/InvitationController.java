@@ -23,15 +23,22 @@ public class InvitationController {
     private final KanbanService kanbanService;
     private final AppUserService appUserService;
     private final InvitationTokenService invitationTokenService;
-    private InvitationRepository invitationRepository;
+    private final InvitationRepository invitationRepository;
     private final EmailSender emailSender;
 
-    public InvitationController(InvitationService invitationService, KanbanService kanbanService, AppUserService appUserService, InvitationTokenService invitationTokenService, EmailSender emailSender) {
-        this.invitationService = invitationService;
-        this.kanbanService = kanbanService;
+    // Конструктор для внедрения зависимостей
+    public InvitationController(InvitationRepository invitationRepository,
+                                AppUserService appUserService,
+                                KanbanService kanbanService,
+                                InvitationService invitationService,
+                                EmailSender emailSender,
+                                InvitationTokenService invitationTokenService) {
+        this.invitationRepository = invitationRepository;
         this.appUserService = appUserService;
-        this.invitationTokenService = invitationTokenService;
+        this.kanbanService = kanbanService;
+        this.invitationService = invitationService;
         this.emailSender = emailSender;
+        this.invitationTokenService = invitationTokenService;
     }
 
     @PostMapping("/{kanbanId}/invite")
