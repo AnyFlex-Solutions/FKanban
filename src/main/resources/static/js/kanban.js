@@ -1,4 +1,17 @@
 $(document).ready(function() {
+    // Проверяем, был ли флаг перезагрузки уже установлен
+    if (!localStorage.getItem('reloaded')) {
+        // Устанавливаем таймер на 1 секунду (1000 мс) для перезагрузки
+        setTimeout(function() {
+            // Устанавливаем флаг, что перезагрузка выполнена
+            localStorage.setItem('reloaded', 'true');
+            // Перезагружаем страницу
+            location.reload();
+        }, 1000); // Здесь можно изменить интервал по своему усмотрению
+    }
+});
+
+$(document).ready(function() {
     const button = document.getElementById('kanbanBtn');
     button.click();
 

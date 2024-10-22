@@ -25,9 +25,6 @@
                     <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item"><a th:href="@{/api/page/registration}" class="nav-link link-dark px-2">Зарегистрироваться</a></li>
                     <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/logout}" class="nav-link link-dark px-2">Выйти</a></li>
                 </ul>
-                <ul class="nav me-auto">
-                    <li class="nav-item"><button id="hideButton">Скрыть Header</button></li>
-                </ul>
             </div>
         </nav>
 
