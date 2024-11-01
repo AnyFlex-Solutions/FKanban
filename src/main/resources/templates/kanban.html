@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8; default-src 'self'; script-src 'self' 'unsafe-hashes'" />
+    <link type="text/css" rel="stylesheet" href="/static/icons/icons.css">
     <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
     <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
@@ -11,7 +12,7 @@
     <script type="text/javascript" th:src="@{/js/kanban.js}"></script>
 
     <title>kanban</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+    <meta content="script-src 'none'; default-src 'self';">
     <link href="../static/css/kanban.css" th:href="@{/css/kanban.css}" rel="stylesheet" />
 </head>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
@@ -78,7 +79,7 @@
         </div>
 
         <!-- Переключатель методологий -->
-        <div class="btn-group centr" role="group" aria-label="Methodology Selector">
+        <div class="btn-group centr" style="width: 100%" role="group" aria-label="Methodology Selector">
             <button type="button" id="kanbanBtn" class="btn btn-outline-primary">Kanban</button>
             <button type="button" id="kanoBtn" class="btn btn-outline-secondary">Kano</button>
             <button type="button" id="moscowBtn" class="btn btn-outline-success">MoSCoW</button>
@@ -86,7 +87,7 @@
 
         <!-- Контейнер для отрисовки доски -->
         <div class="error-container"></div>
-        <div id="boardContainer" th:name="${kanbanId}"></div>
+        <div class="container" id="boardContainer" th:name="${kanbanId}"></div>
     </div>
 </body>
 </html>

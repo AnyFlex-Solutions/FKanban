@@ -23,12 +23,18 @@ $(document).ready(function() {
         })
             .then(response => {
                 if (response.ok) {
-                    location.reload(); // Обновляем страницу после успешного удаления
+                    removeKanbanFromList(kanbanId);
+                    $('#deleteKanbanModal').modal('hide'); // Закрытие модального окна после удаления
                 } else {
-                    console.error('Failed to delete kanban');
+                    console.error('Ошибка при удалении доски');
                 }
             })
             .catch(error => console.error('Error:', error));
+    }
+
+    function removeKanbanFromList(kanbanId) {
+        const kanbanItem = document.querySelector(`.delete-kanban-button[data-kanban-id='${kanbanId}']`).closest('li');
+        if (kanbanItem) kanbanItem.remove();
     }
 
     async function fetchKanban() {
@@ -41,26 +47,49 @@ $(document).ready(function() {
         const formData = { title };
 
         try {
-            await fetch('/api/kanban/new', {
+            const response = await fetch('/api/kanban/new', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    // Redirect or update page as needed
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                addKanbanToList(data);
+            } else {
+                console.error('Ошибка при создании доски');
+            }
         } catch (error) {
-            showError('Failed to sync tasks with the server.');
+            showModal('Ошибка', 'Ошибка при создании доски', 'error');
         }
     }
 
+    function addKanbanToList(kanban) {
+        const kanbanList = document.querySelector('.kanban-list');
+        const li = document.createElement('li');
+        li.classList.add('li');
+
+        const link = document.createElement('a');
+        link.href = `/api/kanban/${kanban.id}`;
+        link.textContent = kanban.title;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-kanban-button');
+        deleteButton.setAttribute('data-kanban-id', kanban.id);
+        deleteButton.setAttribute('data-kanban-title', kanban.title);
+        deleteButton.innerHTML = `<i class="material-icons">delete_outline</i>`;
+        deleteButton.addEventListener('click', () => {
+            document.getElementById('kanbanTitle').textContent = kanban.title;
+            $('#deleteKanbanModal').modal('show');
+            document.getElementById('confirmDeleteButton').onclick = () => deleteKanban(kanban.id);
+        });
+
+        li.appendChild(link);
+        li.appendChild(deleteButton);
+        kanbanList.appendChild(li);
+    }
 
     function addKanban() {
         fetchKanban();
@@ -74,7 +103,6 @@ $(document).ready(function() {
         const modalMessage = document.getElementById('modalMessage');
         const modalButton = document.getElementById('modal-button');
 
-        // Очистка классов для модального окна
         modalElement.classList.remove('modal-success', 'modal-error');
 
         if (type === 'success') {
@@ -139,4 +167,41 @@ $(document).ready(function() {
         inviteUser(kanbanId, inviteeEmail);
         addUserModal.hide();
     });
+
+    document.querySelectorAll('.edit-kanban-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const kanbanId = button.getAttribute('data-kanban-id');
+            const kanbanTitle = button.getAttribute('data-kanban-title');
+            $('#editKanbanTitleModal').modal('show');
+            document.getElementById('modal-title-input').value = kanbanTitle;
+            document.getElementById('confirmUpdateButton').onclick = () => updateKanbanTitle(kanbanId);
+        });
+    });
+
+    function closeEditTitleModal() {
+        $('#editKanbanTitleModal').modal('hide'); // Закрываем модалку
+    }
+
+    function updateKanbanTitle(kanbanId) {
+        const newTitle = document.getElementById("modal-title-input").value;
+
+        console.log(newTitle)
+
+        fetch(`/api/kanban/${kanbanId}/title`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ title: newTitle })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response data:", data); // Проверка возвращаемых данных
+                closeEditTitleModal();
+                document.getElementById("desk-" + kanbanId.toString()).textContent = data.title; // Обновляем на странице
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    }
 });

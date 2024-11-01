@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
+  <link type="text/css" rel="stylesheet" href="/static/icons/icons.css">
   <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
   <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
   <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
@@ -10,7 +11,7 @@
   <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
   <title>Регистрация</title>
-  <meta http-equiv="Content-Security-Policy" content="script-src 'none'; default-src 'self';">
+  <meta content="script-src 'none'; default-src 'self';">
   <link href="../static/css/registration.css" th:href="@{/css/registration.css}" rel="stylesheet" />
 </head>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
@@ -21,7 +22,7 @@
     <div id="error-message" class="alert alert-danger" style="display:none; visibility: hidden"></div>
     <form id="registrationForm">
       <div class="form-group">
-        <label for="name">Почта</label>
+        <label for="name">Имя</label>
         <input type="text" name="name" id="name" placeholder="Имя" required/>
       </div>
       <div class="form-group">

@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
+    <link type="text/css" rel="stylesheet" href="/static/icons/icons.css">
     <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
     <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
     <link href="../static/css/menu.css" th:href="@{/css/menu.css}" rel="stylesheet" />
@@ -12,23 +13,28 @@
     <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
     <title>Меню</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self'; default-src 'self';">
+    <meta content="script-src 'self'; default-src 'self';">
 </head>
 <body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
 <div th:fragment="content" class="myClass">
     <div class="container centr">
         <h1>Канбан доски</h1>
 
-        <ul class="kanban-list ui">
+        <ul class="kanban-list">
             <li class="li" th:each="kanban : ${kanbans}">
-                <a th:href="@{/api/kanban/{id}(id=${kanban.id})}" th:text="${kanban.title}"></a>
-                <button class="btn btn-danger delete-kanban-button" th:data-kanban-id="${kanban.id}" th:data-kanban-title="${kanban.title}">
-                    <i class="fa fa-trash"></i>
+                <a th:href="@{/api/kanban/{id}(id=${kanban.id})}" th:text="${kanban.title}" th:id="'desk-' + ${kanban.id}">></a>
+
+                <button class="edit-kanban-button" th:data-kanban-id="${kanban.id}" th:data-kanban-title="${kanban.title}">
+                    <i class="material-icons">edit</i>
+                </button>
+
+                <button class="delete-kanban-button" th:data-kanban-id="${kanban.id}" th:data-kanban-title="${kanban.title}">
+                    <i class="material-icons">delete_outline</i>
                 </button>
             </li>
         </ul>
 
-        <h2>Создать новую канбан доску</h2>
+        <h2 style="padding-top: 15px;">Создать новую канбан доску</h2>
         <form id="kanbanForm">
             <div class="form-group">
                 <label for="title">Title:</label>
@@ -37,11 +43,12 @@
             <button type="submit" class="button-1" id="submit-button">Создать</button>
         </form>
 
-        <h2>Пригласить пользователя в Канбан доску</h2>
+        <h2 style="padding-top: 15px;">Пригласить пользователя в Канбан доску</h2>
         <div class="error-container"></div>
-        <button type="button" class="button-1 centr-100 add-user-button">Пригласить пользователя</button>
+        <button type="button" class="button-1 add-user-button">Пригласить пользователя</button>
     </div>
 
+    <!-- Модальные окна -->
     <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content backmodal">
@@ -75,42 +82,43 @@
         </div>
     </div>
 
-    <!-- Модальное окно для сообщений -->
-    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="messageModalLabel">Сообщение</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="modalMessage">
-                    <!-- Сообщение будет вставляться сюда -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-button">Закрыть</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно подтверждения удаления -->
+    <!-- Модальное окно для подтверждения удаления -->
     <div class="modal fade" id="deleteKanbanModal" tabindex="-1" role="dialog" aria-labelledby="deleteKanbanModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content backmodal">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteKanbanModalLabel">Подтверждение удаления</h5>
+                    <h5 class="modal-title" id="deleteKanbanModalLabel">Удалить Канбан доску</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    Вы уверены, что хотите удалить доску с названием "<span id="kanbanTitle"></span>"?
+                    Вы уверены, что хотите удалить доску "<span id="kanbanTitle"></span>"?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Удалить</button>
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Отмена</button>
+                    <button type="button" id="confirmDeleteButton" class="btn btn-outline-success">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изменения названия Kanban-доски -->
+    <div class="modal fade" id="editKanbanTitleModal" tabindex="-1" role="dialog" aria-labelledby="editKanbanTitleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content backmodal">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editKanbanTitleModalLabel">Изменить название доски</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="modal-title-input" class="form-control" placeholder="Введите новое название" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Отмена</button>
+                    <button type="button" id="confirmUpdateButton" class="btn btn-outline-success">Сохранить</button>
                 </div>
             </div>
         </div>

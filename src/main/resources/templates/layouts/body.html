@@ -10,59 +10,108 @@
     <title>body</title>
 </head>
 <body>
-    <th:block th:fragment="main-layout (content)">
-        <nav id="mainHeader" class="py-2 bg-light border-bottom">
-            <div class="container d-flex flex-wrap">
-                <ul class="nav me-auto">
-                    <li class="nav-item"><a th:href="@{/api/kanban/menu}" class="nav-link link-dark px-2"><img th:src="@{/img/logo.jpg}" alt="Лого" /></a></li>
-                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/kanban/menu}" class="nav-link link-dark px-2 active" aria-current="page">Меню</a></li>
-                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/private-office}" class="nav-link link-dark px-2">Личный кабинет</a></li>
-                    <li class="nav-item"><a th:href="@{/api/about-us}" class="nav-link link-dark px-2">О нас</a></li>
-                    <li class="nav-item"><a th:href="@{/api/kontakts}" class="nav-link link-dark px-2">Контакты</a></li>
-                </ul>
-                <ul class="nav">
-                    <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item"><a th:href="@{/login}" class="nav-link link-dark px-2">Войти</a></li>
-                    <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item"><a th:href="@{/api/page/registration}" class="nav-link link-dark px-2">Зарегистрироваться</a></li>
-                    <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item"><a th:href="@{/api/logout}" class="nav-link link-dark px-2">Выйти</a></li>
-                </ul>
-            </div>
-        </nav>
+<th:block th:fragment="main-layout (content)">
+    <!-- Header -->
+    <nav id="mainHeader" class="py-2">
+        <div class="container d-flex align-items-center justify-content-between">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a th:href="@{/api/kanban/menu}" class="nav-link">
+                        <span class="material-icons">dashboard</span>
+                        <span class="icon-label">Меню</span>
+                    </a>
+                </li>
+                <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item">
+                    <a th:href="@{/api/private-office}" class="nav-link">
+                        <span class="material-icons">person</span>
+                        <span class="icon-label">Личный кабинет</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/api/about-us}" class="nav-link">
+                        <span class="material-icons">info</span>
+                        <span class="icon-label">О нас</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/api/kontakts}" class="nav-link">
+                        <span class="material-icons">contacts</span>
+                        <span class="icon-label">Контакты</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav">
+                <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item">
+                    <a th:href="@{/login}" class="nav-link">
+                        <span class="material-icons">login</span>
+                        <span class="icon-label">Войти</span>
+                    </a>
+                </li>
+                <li th:if="${#authorization.expression('isAnonymous()')}" class="nav-item">
+                    <a th:href="@{/api/page/registration}" class="nav-link">
+                        <span class="material-icons">person_add</span>
+                        <span class="icon-label">Зарегистрироваться</span>
+                    </a>
+                </li>
+                <li th:if="${#authorization.expression('isAuthenticated()')}" class="nav-item">
+                    <a th:href="@{/api/logout}" class="nav-link">
+                        <span class="material-icons">logout</span>
+                        <span class="icon-label">Выйти</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-        <main>
-            <br>
-            <br>
-            <br>
+    <!-- Main Content -->
+    <main>
+        <div th:replace="${content}" class="margin-top"></div>
+    </main>
 
-            <div th:replace="${content}"></div>
-        </main>
-
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col form_img">
-                        <a th:href="@{/api/kanban/menu}"><img th:src="@{/img/logo.jpg}" alt="Лого" /></a>
-                    </div>
-                    <div class="col">
-                        <h2 class="h2">Контакты</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="mailto:flexikanban@gmail.com">flexikanban@gmail.com</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" href="tel:+79680219427">8 (968) 021 94-27</a></p>
-                    </div>
-
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col form_img">
+                    <a th:href="@{/api/kanban/menu}">
+                        <img th:src="@{/img/logo.jpg}" alt="Лого" />
+                    </a>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <h2 class="h2">Основная информация</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/about-us}">О нас</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/kontakts}">Контакты</a></p>
-                    </div>
-                    <div class="col">
-                        <h2 class="h2">Документы</h2>
-                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/pdf/user_agreement}" target="_blank">Пользовательское соглашение</a></p>
-                        <p class="pfooter"> &#183; <a class="afooter noni" th:href="@{/api/pdf/personal_data_processing_policy}" target="_blank">Политика о обработке персональных данных</a></p>
-                    </div>
+                <div class="col">
+                    <h2>Контакты</h2>
+                    <p class="pfooter">
+                        <span class="material-icons">email</span>
+                        <a class="afooter" href="mailto:flexikanban@gmail.com">flexikanban@gmail.com</a>
+                    </p>
+                    <p class="pfooter">
+                        <span class="material-icons">phone</span>
+                        <a class="afooter" href="tel:+79680219427">8 (968) 021 94-27</a>
+                    </p>
+                </div>
+                <div class="col">
+                    <h2>Основная информация</h2>
+                    <p class="pfooter">
+                        <span class="material-icons">info</span>
+                        <a class="afooter" th:href="@{/api/about-us}">О нас</a>
+                    </p>
+                    <p class="pfooter">
+                        <span class="material-icons">contacts</span>
+                        <a class="afooter" th:href="@{/api/kontakts}">Контакты</a>
+                    </p>
+                </div>
+                <div class="col">
+                    <h2>Документы</h2>
+                    <p class="pfooter">
+                        <span class="material-icons">description</span>
+                        <a class="afooter" th:href="@{/api/pdf/user_agreement}" target="_blank">Пользовательское соглашение</a>
+                    </p>
+                    <p class="pfooter">
+                        <span class="material-icons">policy</span>
+                        <a class="afooter" th:href="@{/api/pdf/personal_data_processing_policy}" target="_blank">Политика обработки данных</a>
+                    </p>
                 </div>
             </div>
-        </footer>
-    </th:block>
+        </div>
+    </footer>
+</th:block>
 </body>
 </html>

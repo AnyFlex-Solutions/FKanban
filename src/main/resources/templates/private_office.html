@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;" />
+  <link type="text/css" rel="stylesheet" href="/static/icons/icons.css">
   <script type="text/javascript" th:src="@{/js/jquery-3.7.1.slim.min.js}"></script>
   <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
   <link href="../static/css/registration.css" th:href="@{/css/registration.css}" rel="stylesheet" />
@@ -13,7 +14,7 @@
   <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
 
   <title>Личный кабинет</title>
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self'; default-src 'self';">
+  <meta content="script-src 'self'; default-src 'self';">
 </head>
 <body th:replace="layouts/body.html :: main-layout (content = ~{::content})">
 <div th:fragment="content" class="myClass">
