@@ -40,8 +40,10 @@ public class Kanban {
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser user;
 
-    @OneToMany(mappedBy = "kanban", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kanban", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Invitation> invitations;
+
+    private boolean isDeleted = false;
 
     // Конструктор копирования
     public Kanban(Kanban other) {
@@ -51,5 +53,6 @@ public class Kanban {
         this.kano_tasks = new ArrayList<>(other.kano_tasks);
         this.user = other.user;
         this.invitations = new ArrayList<>(other.invitations);
+        this.isDeleted = other.isDeleted;
     }
 }

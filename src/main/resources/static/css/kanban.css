@@ -63,39 +63,38 @@ align-items: center;
 }
 
 .kanban-header {
-padding: 10px 15px;
-display: flex;
-justify-content: space-between;
-align-items: center;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .task-description-container {
-padding: 10px;
-color: #6c757d;
+    padding: 10px;
+    color: #6c757d;
 }
 
 .custom-hr {
-margin: 10px 0;
+    margin: 10px 0;
 }
 
 .error-container {
-height: 30px;
+    height: 30px;
 }
 
 .error-message {
-text-align: center;
-margin: 10px;
-background-color: #dc3545;
-border-radius: 0.5rem;
-padding: 10px 20px;
-color: #fff;
+    text-align: center;
+    margin: 10px;
+    background-color: #dc3545;
+    border-radius: 0.5rem;
+    padding: 10px 20px;
+    color: #fff;
 }
 
 .kanb {
-display: flex;
-flex-wrap: nowrap;
-overflow-x: auto;
-
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 /* Modal styles */
@@ -117,7 +116,21 @@ overflow-x: auto;
 }
 
 #mainHeader .container {
-    top: 50%;
-    margin-top: -2em;
-    position: absolute;
+    padding: 15px 20px;
+    margin: 0px 33.33px;
+    height: 103px;
+}
+
+h3 {
+    font-size: 0.9em !important;
+}
+
+.btn {
+    font-size: 0.9em !important;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1300px !important;
+    }
 }

@@ -11,4 +11,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> findByInviteeAndIsActiveTrue(AppUser invitee);
 
     Optional<Invitation> findByKanbanAndInvitee(Kanban kanban, AppUser invitee);
+
+    List<Invitation> findByKanbanIdAndIsActive(Long kanbanId, boolean isActive);
 }

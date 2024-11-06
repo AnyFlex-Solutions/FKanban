@@ -15,7 +15,7 @@ $(document).ready(function() {
     });
 
     function deleteKanban(kanbanId) {
-        fetch(`/api/kanban/${kanbanId}/deactivate`, {
+        fetch(`/api/kanban/${kanbanId}/deactivate-kanban`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,9 +57,11 @@ $(document).ready(function() {
 
             if (response.ok) {
                 const data = await response.json();
-                addKanbanToList(data);
+                addKanbanToList(data);  // Добавляем доску в список немедленно
+                showModal('Успех', 'Доска успешно создана!', 'success'); // Показываем сообщение об успехе
             } else {
                 console.error('Ошибка при создании доски');
+                showModal('Ошибка', 'Ошибка при создании доски', 'error');
             }
         } catch (error) {
             showModal('Ошибка', 'Ошибка при создании доски', 'error');

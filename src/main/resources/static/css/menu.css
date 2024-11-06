@@ -199,3 +199,8 @@ h1, h2, p {
 .edit-kanban-button:hover {
     color: oklch(0.3 0.11 342.88);
 }
+
+pre {
+    font-size: 100% !important;
+    margin-bottom: 0 !important;
+}

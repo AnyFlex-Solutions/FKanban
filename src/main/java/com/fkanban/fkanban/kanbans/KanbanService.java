@@ -6,6 +6,7 @@ import com.fkanban.fkanban.kanbans.MoSCoW.MoSCoWTask;
 import com.fkanban.fkanban.kanbans.MoSCoW.MoSCoWTaskRepository;
 import com.fkanban.fkanban.kanbans.invite.Invitation;
 import com.fkanban.fkanban.kanbans.invite.InvitationRepository;
+import com.fkanban.fkanban.kanbans.invite.InvitationService;
 import com.fkanban.fkanban.kanbans.kano.KanoTask;
 import com.fkanban.fkanban.kanbans.kano.KanoTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class KanbanService {
     @Autowired
     private InvitationRepository invitationRepository;
 
+    @Autowired
+    private InvitationService invitationService;
+
     public List<Task> getAllTasksByKanbanId(Long kanbanId) {
         return taskRepository.findByKanbanId(kanbanId);
     }
@@ -70,7 +74,10 @@ public class KanbanService {
     public Task saveTask(Long kanbanId, Task task) {
         Kanban kanban = kanbanRepository.findById(kanbanId)
                 .orElseThrow(() -> new IllegalStateException("Kanban not found"));
+
+        task.setId(null);
         task.setKanban(kanban);
+
         return taskRepository.save(task);
     }
 
@@ -217,14 +224,15 @@ public class KanbanService {
     public List<Kanban> getAllKanbansForCurrentUser() {
         AppUser currentUser = getCurrentUser();
 
-        // Доски, в которые пользователь был приглашён и которые активны
         List<Invitation> invitations = invitationRepository.findByInviteeAndIsActiveTrue(currentUser);
 
         return invitations.stream()
                 .map(Invitation::getKanban)
-                .distinct() // нет дублирующихся канбанов
+                .filter(kanban -> !kanban.isDeleted()) // только активные доски
+                .distinct()
                 .toList();
     }
+
 
     public Kanban findById(Long kanbanId) {
         return kanbanRepository.findById(kanbanId)
@@ -244,5 +252,15 @@ public class KanbanService {
 
     public Kanban save(Kanban kanban) {
         return kanbanRepository.save(kanban);
+    }
+
+    public void deactivateKanban(Long kanbanId) {
+        Kanban kanban = kanbanRepository.findById(kanbanId)
+                .orElseThrow(() -> new IllegalStateException("Kanban not found"));
+
+        invitationService.deactivateInvitationsByKanbanId(kanbanId);
+
+        kanban.setDeleted(true); // Логическое удаление
+        kanbanRepository.save(kanban); // Сохранение изменения
     }
 }

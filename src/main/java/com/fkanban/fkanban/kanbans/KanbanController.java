@@ -130,4 +130,11 @@ public class KanbanController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/{kanbanId}/deactivate-kanban")
+    @ResponseBody
+    public ResponseEntity<?> deactivateKanban(@PathVariable Long kanbanId) {
+        kanbanService.deactivateKanban(kanbanId);
+        return ResponseEntity.ok().body(Map.of("status", "Kanban and related invitations deactivated successfully"));
+    }
 }

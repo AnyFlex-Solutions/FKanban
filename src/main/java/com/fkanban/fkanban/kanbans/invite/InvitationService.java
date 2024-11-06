@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class InvitationService {
@@ -48,5 +50,13 @@ public class InvitationService {
     public Invitation findById(Long invitationId) {
         return invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new IllegalStateException("Kanban not found"));
+    }
+
+    public void deactivateInvitationsByKanbanId(Long kanbanId) {
+        List<Invitation> invitations = invitationRepository.findByKanbanIdAndIsActive(kanbanId, true);
+        for (Invitation invitation : invitations) {
+            invitation.setActive(false);
+        }
+        invitationRepository.saveAll(invitations);
     }
 }
