@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/src/main/resources/prometheus/LICENSE
+/src/main/resources/prometheus/NOTICE
+/src/main/resources/prometheus/prometheus.exe
+/src/main/resources/prometheus/promtool.exe

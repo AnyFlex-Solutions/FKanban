@@ -48,6 +48,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/img/logo.jpg").permitAll()
                                 .requestMatchers("/img/favicon.ico").permitAll()
                                 .requestMatchers("/api/user/forgot-password-with-email").permitAll()
+                                .requestMatchers("/actuator/prometheus").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
