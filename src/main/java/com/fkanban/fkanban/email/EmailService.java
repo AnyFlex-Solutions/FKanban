@@ -1,22 +1,37 @@
 package com.fkanban.fkanban.email;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class EmailService implements EmailSender {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
     private final JavaMailSender mailSender;
+
+    private final Counter successfulEmailsCounter;
+    private final Counter failedEmailsCounter;
+
+    @Autowired
+    public EmailService(JavaMailSender mailSender, MeterRegistry meterRegistry) {
+        this.mailSender = mailSender;
+        this.successfulEmailsCounter = Counter.builder("email.send.success")
+                .description("Number of successful email sends")
+                .register(meterRegistry);
+        this.failedEmailsCounter = Counter.builder("email.send.failure")
+                .description("Number of failed email sends")
+                .register(meterRegistry);
+    }
 
     @Override
     @Async
@@ -31,9 +46,15 @@ public class EmailService implements EmailSender {
             helper.setFrom("flexikanban@gmail.com");
             mailSender.send(mimeMessage);
 
+            successfulEmailsCounter.increment();
         } catch (MessagingException e) {
             LOGGER.error("Failed to send email", e);
-            throw new IllegalStateException("Failed to send email");
+            failedEmailsCounter.increment();
+            throw new IllegalStateException("Failed to send email", e);
+        } catch (RuntimeException e) {
+            LOGGER.error("Failed to send email due to runtime exception", e);
+            failedEmailsCounter.increment();
+            throw new IllegalStateException("Failed to send email due to runtime error", e);
         }
     }
 

@@ -6,14 +6,14 @@ import com.fkanban.fkanban.appuser.AppUserService;
 import com.fkanban.fkanban.email.EmailSender;
 import com.fkanban.fkanban.registration.token.ConfirmationToken;
 import com.fkanban.fkanban.registration.token.ConfirmationTokenService;
-import lombok.AllArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
-@AllArgsConstructor
 public class RegistrationService {
 
     private EmailValidator emailValidator;
@@ -21,10 +21,25 @@ public class RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
 
+    private final Counter successfulRegistrations;
+    private final Counter failedRegistrations;
+    private final Counter successfulConfirmations;
+
+    public RegistrationService(AppUserService appUserService, ConfirmationTokenService confirmationTokenService, EmailSender emailSender, EmailValidator emailValidator, MeterRegistry meterRegistry) {
+        this.appUserService = appUserService;
+        this.confirmationTokenService = confirmationTokenService;
+        this.emailSender = emailSender;
+        this.emailValidator = emailValidator;
+        this.successfulRegistrations = meterRegistry.counter("registrations.success");
+        this.failedRegistrations = meterRegistry.counter("registrations.failure");
+        this.successfulConfirmations = meterRegistry.counter("confirmations.success");
+    }
+
     public String register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
 
         if (!isValidEmail) {
+            failedRegistrations.increment();
             throw new IllegalStateException("Email not valid");
         }
 
@@ -40,9 +55,11 @@ public class RegistrationService {
 
             String link = "http://localhost:8090/api/v1/registration/confirm?token=" + token;
             emailSender.send(request.getEmail(), buildEmail(request.getName(), link));
+            successfulRegistrations.increment();
             return token;
         } catch (IllegalStateException e) {
             if (e.getMessage().contains("Email already taken")) {
+                failedRegistrations.increment();
                 throw new IllegalStateException("Почта уже используется");
             }
             throw e;
@@ -79,6 +96,7 @@ public class RegistrationService {
 
         confirmationTokenService.setConfirmedAt(token);
         appUserService.enableAppUser((confirmationToken.getAppUser().getEmail()));
+        successfulConfirmations.increment();
 
         return "redirect:/api/page/registration/success";
     }

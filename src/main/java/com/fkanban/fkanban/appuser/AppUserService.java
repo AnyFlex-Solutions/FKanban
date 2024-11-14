@@ -2,6 +2,7 @@ package com.fkanban.fkanban.appuser;
 
 import com.fkanban.fkanban.registration.token.ConfirmationToken;
 import com.fkanban.fkanban.registration.token.ConfirmationTokenService;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class AppUserService implements UserDetailsService {
+    private final MeterRegistry meterRegistry;
 
     private final static String USER_NOT_FOUND_MSG = "Пользователь с почтой %s не найден.";
     private final AppUserRepository appUserRepository;
@@ -72,30 +74,38 @@ public class AppUserService implements UserDetailsService {
     }
 
     public void updateUser(UpdateUserRequest request) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        meterRegistry.counter("appuser.update.attempts").increment();
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        AppUser user = appUserRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("Пользователь не найден"));
+            AppUser user = appUserRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalStateException("Пользователь не найден"));
 
-        Optional.ofNullable(request.getNickname())
-                .filter(nickname -> !nickname.isEmpty())
-                .ifPresent(user::setName);
+            Optional.ofNullable(request.getNickname())
+                    .filter(nickname -> !nickname.isEmpty())
+                    .ifPresent(user::setName);
 
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            if (request.getSuccessPassword() != null && !request.getSuccessPassword().isEmpty()) {
-                if (request.getPassword().equals(request.getSuccessPassword())) {
-                    validatePassword(request.getSuccessPassword());
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                if (request.getSuccessPassword() != null && !request.getSuccessPassword().isEmpty()) {
+                    if (request.getPassword().equals(request.getSuccessPassword())) {
+                        validatePassword(request.getSuccessPassword());
 
-                    user.setPassword(bCryptPasswordEncoder.encode(request.getSuccessPassword()));
+                        user.setPassword(bCryptPasswordEncoder.encode(request.getSuccessPassword()));
+                    } else {
+                        throw new IllegalStateException("Пароли не совпадают.");
+                    }
                 } else {
-                    throw new IllegalStateException("Пароли не совпадают.");
+                    throw new IllegalStateException("Повторите ввод пароля для проверки коректности.");
                 }
-            } else {
-                throw new IllegalStateException("Повторите ввод пароля для проверки коректности.");
             }
-        }
 
-        appUserRepository.save(user);
+            appUserRepository.save(user);
+
+            meterRegistry.counter("appuser.update.success").increment();
+        } catch (IllegalStateException e) {
+            meterRegistry.counter("appuser.update.failures").increment();
+            throw e;
+        }
     }
 
     public AppUser findUserByEmail(String email) {

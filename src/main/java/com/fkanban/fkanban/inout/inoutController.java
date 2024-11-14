@@ -1,7 +1,8 @@
 package com.fkanban.fkanban.inout;
 
 import com.fkanban.fkanban.appuser.AppUserService;
-import lombok.AllArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +13,21 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("/api")
-@AllArgsConstructor
 public class inoutController {
     private final AppUserService appUserService;
 
+    private final Counter pageViewCounter;
+    private final Counter successfulLoginCounter;
+
+    public inoutController(AppUserService appUserService, MeterRegistry meterRegistry) {
+        this.appUserService = appUserService;
+        this.pageViewCounter = meterRegistry.counter("page.views", "page", "login");
+        this.successfulLoginCounter = meterRegistry.counter("login.success", "status", "successful");
+    }
+
     @GetMapping("/page/login")
     public String showLoginPage() {
+        pageViewCounter.increment();
         return "login";
     }
 
@@ -34,6 +44,7 @@ public class inoutController {
     @GetMapping("/private-office")
     public String getPrivateOfficePage(Model model, Principal principal) {
         if (principal != null) {
+            successfulLoginCounter.increment();
             String email = principal.getName();
             UserDetails user = appUserService.loadUserByUsername(email);
             model.addAttribute("user", user);
