@@ -12,15 +12,16 @@ import lombok.Setter;
 public class MoSCoWTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Уникальный идентификатор задачи
 
     @Column(nullable = false)
-    private String title;
-    private String description;
-    private String status;
+    private String title; // Заголовок задачи
+    private String description; // Описание задачи
+    private String status; // Статус задачи
 
+    // Связь с доской Kanban
     @ManyToOne
     @JoinColumn(name = "kanban_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference // Прекращаем рекурсивную сериализацию JSON
     private Kanban kanban;
 }

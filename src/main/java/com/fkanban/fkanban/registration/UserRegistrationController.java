@@ -17,11 +17,13 @@ public class UserRegistrationController {
 
     private RegistrationService registrationService;
 
+    // Метод для регистрации пользователя
     @PostMapping
     public ResponseEntity<Map<String, String>> register(@RequestBody RegistrationRequest request, Model model) {
         Map<String, String> response = new HashMap<>();
 
         try {
+            // Регистрация и получение токена
             String token = registrationService.register(request);
             response.put("token", token);
             return ResponseEntity.ok(response);
@@ -31,6 +33,8 @@ public class UserRegistrationController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    // Метод для подтверждения токена
     @GetMapping(path = "confirm")
     public ResponseEntity<Void> confirm(@RequestParam("token") String token) {
         registrationService.confirmToken(token);

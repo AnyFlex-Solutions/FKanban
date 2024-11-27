@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 public class ConfirmationToken {
 
+    // Генератор последовательности для уникальных значений id
     @SequenceGenerator(
             name = "confirmation_token_sequence",
             sequenceName = "confirmation_token_sequence",
@@ -25,18 +26,22 @@ public class ConfirmationToken {
             generator = "confirmation_token_sequence"
     )
 
-    private Long id;
+    private Long id; // Уникальный идентификатор токена
+
     @Column(nullable = false)
-    private String token;
+    private String token; // Токен для подтверждения
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // Время создания токена
     @Column(nullable = false)
-    private LocalDateTime expiresAt;
-    private LocalDateTime confirmedAt;
+    private LocalDateTime expiresAt; // Время истечения действия токена
+    private LocalDateTime confirmedAt; // Время подтверждения токена (может быть null)
+
+    // Связь с пользователем, который создал токен
     @ManyToOne
     @JoinColumn(nullable = false, name = "app_user_id")
     private AppUser appUser;
 
+    // Конструктор для инициализации токена
     public ConfirmationToken(String token,
                              LocalDateTime createdAt,
                              LocalDateTime expiredAt,

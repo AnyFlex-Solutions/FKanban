@@ -12,15 +12,16 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+// Сервис отправки писем
 @Service
 public class EmailService implements EmailSender {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class); // Логгер
 
-    private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender;  // JavaMailSender для отправки писем
 
-    private final Counter successfulEmailsCounter;
-    private final Counter failedEmailsCounter;
+    private final Counter successfulEmailsCounter; // Счетчик успешных отправок
+    private final Counter failedEmailsCounter; // Счетчик неудачных отправок
 
     @Autowired
     public EmailService(JavaMailSender mailSender, MeterRegistry meterRegistry) {
@@ -34,7 +35,7 @@ public class EmailService implements EmailSender {
     }
 
     @Override
-    @Async
+    @Async // Асинхронная отправка писем
     public void send(String to, String email) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();

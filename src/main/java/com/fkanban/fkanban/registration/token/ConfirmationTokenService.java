@@ -10,16 +10,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ConfirmationTokenService {
 
+    // Репозиторий для работы с токенами подтверждения
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
+    // Метод для сохранения нового токена подтверждения
     public void saveConfirmationToken(ConfirmationToken token) {
         confirmationTokenRepository.save(token);
     }
 
+    // Метод для получения токена по его значению
     public Optional<ConfirmationToken> getToken(String token) {
         return confirmationTokenRepository.findByToken(token);
     }
 
+    // Метод для обновления времени подтверждения токена
     public int setConfirmedAt(String token) {
         return confirmationTokenRepository.updateConfirmedAt(token, LocalDateTime.now());
     }

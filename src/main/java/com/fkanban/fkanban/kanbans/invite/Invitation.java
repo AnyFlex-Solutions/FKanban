@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+// Сущность приглашения
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -20,17 +21,17 @@ public class Invitation {
 
     @ManyToOne
     @JoinColumn(name = "kanban_id", nullable = false)
-    private Kanban kanban;
+    private Kanban kanban; // Доска Kanban
 
     @ManyToOne
     @JoinColumn(name = "inviter_id", nullable = false)
-    private AppUser inviter;
+    private AppUser inviter;  // Пригласивший пользователь
 
     @ManyToOne
     @JoinColumn(name = "invitee_id", nullable = false)
-    private AppUser invitee;
+    private AppUser invitee;  // Приглашённый пользователь
 
-    private boolean isActive = true;
+    private boolean isActive = true; // Флаг активности приглашения
 
     public boolean isActive() {
         return isActive;

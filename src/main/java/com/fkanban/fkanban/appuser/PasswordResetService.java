@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
+// Сервис для сброса пароля
 @Service
 @AllArgsConstructor
 public class PasswordResetService {
@@ -14,19 +15,26 @@ public class PasswordResetService {
     private final EmailSender emailSender;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    // Отправка письма для сброса пароля
     public void sendResetPasswordEmail(String email) {
+        // Находим пользователя по email, выбрасываем исключение, если пользователь не найден
         AppUser user = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("Пользователь не найден"));
 
+        // Генерируем новый случайный пароль
         String newPassword = generateRandomPassword();
+        // Хешируем и сохраняем новый пароль в базу
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
         appUserRepository.save(user);
 
+        // Генерируем текст письма
         String message = buildPasswordResetEmail(user.getName(), newPassword);
 
+        // Отправляем письмо
         emailSender.send(email, message);
     }
 
+    // Метод для генерации текста письма о сбросе пароля
     private String buildPasswordResetEmail(String name, String newPassword) {
         return "<div style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto; background-color: #f4f4f4;\">\n" +
                 "    <div style=\"background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">\n" +
@@ -41,10 +49,13 @@ public class PasswordResetService {
                 "</div>";
     }
 
+    // Метод для генерации случайного пароля
     private String generateRandomPassword() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@%#&";
         StringBuilder password = new StringBuilder();
         Random random = new Random();
+
+        // Генерация пароля длиной 8 символов
         for (int i = 0; i < 8; i++) {
             password.append(chars.charAt(random.nextInt(chars.length())));
         }

@@ -2,8 +2,10 @@ package com.fkanban.fkanban.kanbans.invite;
 
 import com.fkanban.fkanban.appuser.AppUser;
 import com.fkanban.fkanban.appuser.AppUserService;
+import com.fkanban.fkanban.email.EmailSender;
 import com.fkanban.fkanban.kanbans.Kanban;
 import com.fkanban.fkanban.kanbans.KanbanService;
+import com.fkanban.fkanban.kanbans.invite.token.InvitationTokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,31 +14,33 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class InvitationControllerTest {
-
-    @Mock
-    private InvitationService invitationService;
-
-    @Mock
-    private AppUserService appUserService;
-
-    @Mock
-    private KanbanService kanbanService;
+class InvitationControllerTest {
 
     @InjectMocks
     private InvitationController invitationController;
 
     @Mock
-    private InvitationRepository invitationRepository;
+    private InvitationService invitationService;
 
-    //@InjectMocks
-    //private InvitationService invitationService;
+    @Mock
+    private KanbanService kanbanService;
+
+    @Mock
+    private AppUserService appUserService;
+
+    @Mock
+    private InvitationTokenService invitationTokenService;
+
+    @Mock
+    private EmailSender emailSender;
+
+    @Mock
+    private InvitationRepository invitationRepository;
 
     @BeforeEach
     void setUp() {
@@ -44,39 +48,59 @@ public class InvitationControllerTest {
     }
 
     @Test
-    void inviteUser_UserAlreadyHasAccess() {
+    void testInviteUser_Success() {
+        Long kanbanId = 1L;
+        String inviteeEmail = "test@example.com";
+        AppUser invitee = new AppUser();
+        invitee.setEmail(inviteeEmail);
         Kanban kanban = new Kanban();
         AppUser inviter = new AppUser();
-        AppUser invitee = new AppUser();
-        invitee.setEmail("invitee@example.com");
+        inviter.setEmail("inviter@example.com");
 
+        when(appUserService.checkUserByEmail(inviteeEmail)).thenReturn(true);
+        when(appUserService.findUserByEmail(inviteeEmail)).thenReturn(invitee);
+        when(kanbanService.findById(kanbanId)).thenReturn(kanban);
         when(invitationService.getCurrentUser()).thenReturn(inviter);
-        when(appUserService.checkUserByEmail(invitee.getEmail())).thenReturn(true);
-        when(kanbanService.findById(1L)).thenReturn(kanban);
+        when(invitationRepository.findByKanbanAndInvitee(kanban, invitee)).thenReturn(Optional.empty());
+        when(invitationTokenService.createInvitationToken(kanban, inviter, invitee)).thenReturn("test-token");
 
-        doThrow(new RuntimeException("User already has access"))
-                .when(invitationService)
-                .createInvitation(kanban, inviter, invitee);
+        ResponseEntity<Map<String, String>> response = invitationController.inviteUser(kanbanId, inviteeEmail);
 
-        Exception exception = assertThrows(RuntimeException.class,
-                () -> invitationController.inviteUser(1L, invitee.getEmail()));
-        assertEquals("User already has access", exception.getMessage());
+        assertNotNull(response);
+        assertEquals("Приглашение было успешно отправлено.", response.getBody().get("message"));
+        verify(emailSender).send(eq(inviteeEmail), anyString());
     }
 
     @Test
-    void inviteUser_Success() {
-        Kanban kanban = new Kanban();
+    void testInviteUser_AlreadyInvited() {
+        Long kanbanId = 1L;
+        String inviteeEmail = "test@example.com";
         AppUser invitee = new AppUser();
-        invitee.setEmail("invitee@example.com");
+        invitee.setEmail(inviteeEmail);
+        Kanban kanban = new Kanban();
+        AppUser inviter = new AppUser();
 
-        when(invitationService.getCurrentUser()).thenReturn(new AppUser());
-        when(appUserService.checkUserByEmail(invitee.getEmail())).thenReturn(false);
-        when(kanbanService.findById(1L)).thenReturn(kanban);
-        doNothing().when(invitationService).createInvitation(any(), any(), any());
+        when(appUserService.checkUserByEmail(inviteeEmail)).thenReturn(true);
+        when(appUserService.findUserByEmail(inviteeEmail)).thenReturn(invitee);
+        when(kanbanService.findById(kanbanId)).thenReturn(kanban);
+        when(invitationService.getCurrentUser()).thenReturn(inviter);
 
-        ResponseEntity<Map<String, String>> response = invitationController.inviteUser(1L, invitee.getEmail());
+        Invitation existingInvitation = new Invitation();
+        existingInvitation.setActive(true);
+        when(invitationRepository.findByKanbanAndInvitee(kanban, invitee)).thenReturn(Optional.of(existingInvitation));
 
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("Приглашение было успешно отправлено.", response.getBody().get("message"));
+        Error exception = assertThrows(Error.class, () -> invitationController.inviteUser(kanbanId, inviteeEmail));
+        assertEquals("Пользователь уже имеет доступ", exception.getMessage());
+    }
+
+    @Test
+    void testInviteUser_UserNotRegistered() {
+        Long kanbanId = 1L;
+        String inviteeEmail = "unregistered@example.com";
+
+        when(appUserService.checkUserByEmail(inviteeEmail)).thenReturn(false);
+
+        Error exception = assertThrows(Error.class, () -> invitationController.inviteUser(kanbanId, inviteeEmail));
+        assertEquals("Пользователь с почтой unregistered@example.com не зарегистрирован", exception.getMessage());
     }
 }

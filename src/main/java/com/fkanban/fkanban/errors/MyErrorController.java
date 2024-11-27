@@ -7,15 +7,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+// Контроллер для обработки ошибок
 @Controller
 public class MyErrorController implements ErrorController {
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request) {
+        // Получение статуса ошибки из атрибутов запроса
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
 
+            // Обработка различных кодов ошибок и возврат соответствующих страниц
             if (statusCode == HttpStatus.NOT_FOUND.value()) {
                 return "errors/404";
             } else if (statusCode == HttpStatus.FORBIDDEN.value()) {
@@ -31,6 +34,7 @@ public class MyErrorController implements ErrorController {
             }
         }
 
+        // Возврат общей страницы ошибки, если код неизвестен
         return "error";
     }
 }
