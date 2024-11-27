@@ -1,12 +1,30 @@
+/**
+ * Скрипт для обработки формы регистрации, отображения ошибок и управления паролями.
+ *
+ * @requires jQuery - Для обработки кликов на элементы и управления DOM.
+ */
 $(document).ready(function() {
+    /**
+     * Элемент для отображения сообщений об ошибках.
+     * @type {HTMLElement}
+     */
     const errorMessageDiv = document.getElementById('error-message');
 
+    // Скрытие сообщения об ошибке по умолчанию
     errorMessageDiv.style.display = 'none';
     errorMessageDiv.style.visibility = 'hidden';
     errorMessageDiv.innerHTML = '';
 
+    /**
+     * Таймер для автоматического скрытия сообщения об ошибке.
+     * @type {number | undefined}
+     */
     let errorTimeout;
 
+    /**
+     * Обработчик события отправки формы регистрации.
+     * @param {Event} event - Событие отправки формы.
+     */
     document.getElementById('registrationForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
@@ -64,6 +82,9 @@ $(document).ready(function() {
             });
     });
 
+    /**
+     * Обработчик события клика на элемент для переключения видимости пароля.
+     */
     $('.unmask').on('click', function(){
         if($(this).prev('input').attr('type') === 'password')
             $(this).prev('input').prop('type', 'text');
@@ -72,6 +93,11 @@ $(document).ready(function() {
         return false;
     });
 
+    /**
+     * Функция для отображения сообщения об ошибке.
+     *
+     * @param {string} message - Текст сообщения об ошибке.
+     */
     function displayError(message) {
         // Сброс предыдущего таймера, если он существует
         if (errorTimeout) {
