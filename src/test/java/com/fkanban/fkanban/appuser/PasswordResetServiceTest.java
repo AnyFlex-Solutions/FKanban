@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class PasswordResetServiceTest {
+public class PasswordResetServiceTest {
     private AppUserRepository appUserRepository;
     private EmailSender emailSender;
     private BCryptPasswordEncoder bCryptPasswordEncoder;

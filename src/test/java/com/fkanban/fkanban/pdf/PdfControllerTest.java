@@ -13,7 +13,7 @@ import java.io.IOException;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class PdfControllerTest {
+public class PdfControllerTest {
 
     @InjectMocks
     private PdfController pdfController;

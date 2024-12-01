@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class UserControllerTest {
+public class UserControllerTest {
     private AppUserService appUserService;
     private PasswordResetService passwordResetService;
     private UserController userController;

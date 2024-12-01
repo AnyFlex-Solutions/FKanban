@@ -15,7 +15,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-class UserRegistrationControllerTest {
+public class UserRegistrationControllerTest {
 
     @InjectMocks
     private UserRegistrationController userRegistrationController;
@@ -32,7 +32,7 @@ class UserRegistrationControllerTest {
     }
 
     @Test
-    void register_ValidRequest_ShouldReturnToken() {
+    public void register_ValidRequest_ShouldReturnToken() {
         RegistrationRequest request = new RegistrationRequest("Test User", "test@example.com", "password123");
         when(registrationService.register(request)).thenReturn("testToken");
 
@@ -43,7 +43,7 @@ class UserRegistrationControllerTest {
     }
 
     @Test
-    void register_InvalidEmail_ShouldReturnBadRequest() {
+    public void register_InvalidEmail_ShouldReturnBadRequest() {
         RegistrationRequest request = new RegistrationRequest("Test User", "invalid-email", "password123");
         when(registrationService.register(request)).thenThrow(new IllegalStateException("Email not valid"));
 

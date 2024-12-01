@@ -12,7 +12,7 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class EmailServiceTest {
+public class EmailServiceTest {
 
     @Mock
     private JavaMailSender mailSender;

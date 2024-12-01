@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class InvitationControllerTest {
+public class InvitationControllerTest {
 
     @InjectMocks
     private InvitationController invitationController;
