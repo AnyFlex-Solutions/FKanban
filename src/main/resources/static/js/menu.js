@@ -1,9 +1,39 @@
+/**
+ * Скрипт управления Kanban-досками на странице.
+ *
+ * Функционал:
+ * 1. Удаление Kanban-досок.
+ * 2. Создание Kanban-досок.
+ * 3. Приглашение пользователей на доску.
+ * 4. Редактирование заголовков Kanban-досок.
+ * 5. Управление отображением модальных окон.
+ */
 $(document).ready(function() {
+    /**
+     * Кнопка отправки данных для создания Kanban-доски.
+     * @type {HTMLButtonElement}
+     */
     const submitButton = document.querySelector('#submit-button');
+
+    /**
+     * Кнопка сохранения приглашённого пользователя.
+     * @type {HTMLButtonElement}
+     */
     const saveButton = document.querySelector('#saveButton');
+
+    /**
+     * Экземпляр модального окна для добавления пользователя.
+     * @type {bootstrap.Modal}
+     */
     const addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
+
+    /**
+     * Контейнер для отображения ошибок.
+     * @type {HTMLElement}
+     */
     const errorContainer = document.querySelector('.error-container');
 
+    // Удаление Kanban-доски
     document.querySelectorAll('.delete-kanban-button').forEach(button => {
         button.addEventListener('click', () => {
             const kanbanId = button.getAttribute('data-kanban-id');
@@ -14,6 +44,10 @@ $(document).ready(function() {
         });
     });
 
+    /**
+     * Удаление Kanban-доски по идентификатору.
+     * @param {string} kanbanId - Идентификатор Kanban-доски.
+     */
     function deleteKanban(kanbanId) {
         fetch(`/api/kanban/${kanbanId}/deactivate-kanban`, {
             method: 'POST',
@@ -32,11 +66,18 @@ $(document).ready(function() {
             .catch(error => console.error('Error:', error));
     }
 
+    /**
+     * Удаление Kanban-доски из списка на странице.
+     * @param {string} kanbanId - Идентификатор Kanban-доски.
+     */
     function removeKanbanFromList(kanbanId) {
         const kanbanItem = document.querySelector(`.delete-kanban-button[data-kanban-id='${kanbanId}']`).closest('li');
         if (kanbanItem) kanbanItem.remove();
     }
 
+    /**
+     * Асинхронная функция создания Kanban-доски.
+     */
     async function fetchKanban() {
         const title = document.getElementById("title").value;
         if (!title) {
@@ -68,6 +109,12 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Добавление Kanban-доски в список на странице.
+     * @param {Object} kanban - Объект с данными Kanban-доски.
+     * @param {string} kanban.id - Идентификатор Kanban-доски.
+     * @param {string} kanban.title - Название Kanban-доски.
+     */
     function addKanbanToList(kanban) {
         const kanbanList = document.querySelector('.kanban-list');
         const li = document.createElement('li');
@@ -93,12 +140,21 @@ $(document).ready(function() {
         kanbanList.appendChild(li);
     }
 
+    /**
+     * Функция для добавления Kanban-доски.
+     */
     function addKanban() {
         fetchKanban();
     }
 
     submitButton.addEventListener('click', addKanban);
 
+    /**
+     * Отображение модального окна.
+     * @param {string} title - Заголовок модального окна.
+     * @param {string} message - Сообщение модального окна.
+     * @param {'success'|'error'} type - Тип сообщения (успех или ошибка).
+     */
     function showModal(title, message, type) {
         const modalElement = document.getElementById('messageModal');
         const modalLabel = document.getElementById('messageModalLabel');
@@ -130,6 +186,11 @@ $(document).ready(function() {
         $('#messageModal').modal('show');
     }
 
+    /**
+     * Отправка приглашения пользователю на Kanban-доску.
+     * @param {string} kanbanId - Идентификатор Kanban-доски.
+     * @param {string} inviteeEmail - Email приглашённого пользователя.
+     */
     async function inviteUser(kanbanId, inviteeEmail) {
         try {
             const response = await fetch(`/api/kanban/${kanbanId}/invite?inviteeEmail=${inviteeEmail}`, {
@@ -150,17 +211,22 @@ $(document).ready(function() {
         }
     }
 
-    // Функция для открытия модального окна для добавления задачи
+    /**
+     * Открывает модальное окно для добавления пользователя.
+     */
     function openAddUserModal() {
         addUserModal.show();
     }
 
+    // Добавляем обработчики событий для кнопок добавления пользователей.
     document.querySelectorAll('.add-user-button').forEach(button => {
         button.addEventListener('click', () => {
             openAddUserModal();
         });
     });
 
+
+    // Обработчик сохранения нового пользователя.
     saveButton.addEventListener('click', async (e) => {
         e.preventDefault();
         const inviteeEmail = document.getElementById('inviteeEmail').value;
@@ -170,6 +236,7 @@ $(document).ready(function() {
         addUserModal.hide();
     });
 
+    // Добавляем обработчики событий для кнопок редактирования Kanban-доски.
     document.querySelectorAll('.edit-kanban-button').forEach(button => {
         button.addEventListener('click', () => {
             const kanbanId = button.getAttribute('data-kanban-id');
@@ -180,10 +247,17 @@ $(document).ready(function() {
         });
     });
 
+    /**
+     * Закрывает модальное окно для редактирования названия Kanban-доски.
+     */
     function closeEditTitleModal() {
         $('#editKanbanTitleModal').modal('hide'); // Закрываем модалку
     }
 
+    /**
+     * Обновляет название Kanban-доски.
+     * @param {string} kanbanId - Идентификатор Kanban-доски.
+     */
     function updateKanbanTitle(kanbanId) {
         const newTitle = document.getElementById("modal-title-input").value;
 

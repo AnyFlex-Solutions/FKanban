@@ -11,5 +11,4 @@ FKanbanApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

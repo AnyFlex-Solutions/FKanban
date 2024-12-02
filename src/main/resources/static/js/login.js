@@ -1,12 +1,32 @@
+/**
+ * Скрипт управления функционалом страницы восстановления пароля.
+ *
+ * Функционал:
+ * 1. Скрытие/показ пароля при клике на иконку.
+ * 2. Отправка запроса на восстановление пароля по введённому email.
+ * 3. Отображение модальных окон с результатом операций.
+ */
 $(document).ready(function() {
+    /**
+     * Блок сообщения об ошибке.
+     * @type {HTMLDivElement}
+     */
     const errorMessageDiv = document.getElementById('error-message');
 
+    // Инициализация состояния сообщения об ошибке
     errorMessageDiv.style.display = 'none';
     errorMessageDiv.style.visibility = 'hidden';
     errorMessageDiv.innerHTML = '';
 
+    /**
+     * Таймаут для автоматического скрытия сообщений об ошибке.
+     * @type {number|undefined}
+     */
     let errorTimeout;
 
+    /**
+     * Обработчик клика для отображения/скрытия пароля.
+     */
     $('.unmask').on('click', function(){
         if($(this).prev('input').attr('type') === 'password')
             $(this).prev('input').prop('type', 'text');
@@ -15,15 +35,27 @@ $(document).ready(function() {
         return false;
     });
 
+    /**
+     * Обработчик клика по кнопке восстановления пароля.
+     */
     document.getElementById('forgotPasswordBtn').addEventListener('click', function () {
+        /**
+         * Email пользователя для восстановления пароля.
+         * @type {string}
+         */
         const email = document.getElementById('username').value;
         if (email) {
+            // Отправка POST-запроса на сервер для восстановления пароля
             fetch(`/api/user/forgot-password-with-email?email=${email}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
             }).then(response => {
+                /**
+                 * Тип содержимого ответа сервера.
+                 * @type {string|null}
+                 */
                 const contentType = response.headers.get('Content-Type');
                 if (!response.ok) {
                     if (contentType && contentType.includes('application/json')) {
@@ -59,10 +91,35 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * Функция отображения модального окна.
+     * @param {string} title - Заголовок модального окна.
+     * @param {string} message - Сообщение модального окна.
+     * @param {'success'|'error'} type - Тип сообщения (успех или ошибка).
+     */
     function showModal(title, message, type) {
+        /**
+         * Модальное окно.
+         * @type {HTMLElement}
+         */
         const modalElement = document.getElementById('messageModal');
+
+        /**
+         * Заголовок модального окна.
+         * @type {HTMLElement}
+         */
         const modalLabel = document.getElementById('messageModalLabel');
+
+        /**
+         * Текст сообщения в модальном окне.
+         * @type {HTMLElement}
+         */
         const modalMessage = document.getElementById('modalMessage');
+
+        /**
+         * Кнопка в модальном окне.
+         * @type {HTMLElement}
+         */
         const modalButton = document.getElementById('modal-button');
 
         // Очистка классов для модального окна
@@ -88,6 +145,8 @@ $(document).ready(function() {
 
         modalLabel.textContent = title;
         modalMessage.textContent = message;
+
+        // Отображение модального окна
         $('#messageModal').modal('show');
     }
 });

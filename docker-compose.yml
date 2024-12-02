@@ -1,0 +1,49 @@
+services:
+  user_java:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8090:8090"
+    image: user_java-image
+    container_name: user_java
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    container_name: prometheus
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:10.4.2-ubuntu
+    container_name: grafana
+    ports:
+      - "8050:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./configs:/etc/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - app-network
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  app-network:
+    driver: bridge

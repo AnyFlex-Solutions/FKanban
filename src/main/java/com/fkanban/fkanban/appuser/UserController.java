@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 
+// REST-контроллер для работы с пользователями
 @RestController
 @RequestMapping("/api/user")
 @AllArgsConstructor
 public class UserController {
-    private final AppUserService appUserService;
-    private final PasswordResetService passwordResetService;
+    private final AppUserService appUserService; // Сервис для управления пользователями
+    private final PasswordResetService passwordResetService; // Сервис для сброса пароля
 
+    // Эндпоинт для обновления данных пользователя
     @PostMapping(value = "/update", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> updateUser(UpdateUserRequest request) {
         try {
@@ -30,6 +32,7 @@ public class UserController {
         }
     }
 
+    // Эндпоинт для сброса пароля (авторизованному пользователю)
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -38,6 +41,7 @@ public class UserController {
         return ResponseEntity.ok("Новый пароль отправлен на Вашу почту.");
     }
 
+    // Эндпоинт для сброса пароля по email
     @PostMapping("/forgot-password-with-email")
     public ResponseEntity<?> forgotPasswordWithEmail(@RequestParam("email") String email) {
         try {

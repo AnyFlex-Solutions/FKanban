@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+// Конфигурация для обработки favicon
 @Configuration
 public class FaviconConfiguration {
     @Bean
@@ -18,16 +19,17 @@ public class FaviconConfiguration {
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setOrder(Integer.MIN_VALUE);
         mapping.setUrlMap(Collections.singletonMap(
-                "/favicon.ico", faviconRequestHandler()));
+                "/favicon.ico", faviconRequestHandler())); // Настройка пути к favicon
         return mapping;
     }
 
     @Bean
     protected ResourceHttpRequestHandler faviconRequestHandler() {
+        // Настройка обработчика ресурсов для favicon
         ResourceHttpRequestHandler requestHandler
                 = new ResourceHttpRequestHandler();
         ClassPathResource classPathResource
-                = new ClassPathResource("static/img/");
+                = new ClassPathResource("static/img/"); // Указание пути к ресурсам
         List<Resource> locations = Arrays.asList(classPathResource);
         requestHandler.setLocations(locations);
         return requestHandler;

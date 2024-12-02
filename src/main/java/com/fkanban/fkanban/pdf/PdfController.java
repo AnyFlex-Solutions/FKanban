@@ -12,6 +12,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/api/pdf")
 public class PdfController {
+    // Метод для отправки PDF документа о политике обработки персональных данных
     @GetMapping("/personal_data_processing_policy")
     public void getPdf1(HttpServletResponse response) throws IOException {
         ClassPathResource pdfFile = new ClassPathResource("static/pdf/personal_data_processing_policy.pdf");
@@ -22,6 +23,7 @@ public class PdfController {
         StreamUtils.copy(pdfFile.getInputStream(), response.getOutputStream());
     }
 
+    // Метод для отправки PDF документа о пользовательском соглашении
     @GetMapping("/user_agreement")
     public void getPdf2(HttpServletResponse response) throws IOException {
         ClassPathResource pdfFile = new ClassPathResource("static/pdf/user_agreement.pdf");

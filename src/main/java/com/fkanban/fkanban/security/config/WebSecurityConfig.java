@@ -24,11 +24,13 @@ public class WebSecurityConfig {
     private final AppUserService appUserService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    // Метод для настройки цепочки фильтров безопасности
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Используем новый способ отключения CSRF
                 .cors(cors -> cors.configurationSource(request -> {
+                    // Настройка CORS для разрешения междоменных запросов
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("*")); // Настройте по вашему усмотрению
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
@@ -48,6 +50,8 @@ public class WebSecurityConfig {
                                 .requestMatchers("/img/logo.jpg").permitAll()
                                 .requestMatchers("/img/favicon.ico").permitAll()
                                 .requestMatchers("/api/user/forgot-password-with-email").permitAll()
+                                .requestMatchers("/metrics").permitAll()
+                                .requestMatchers("/metrics/custom").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
@@ -65,6 +69,7 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    // Метод для настройки исключений из фильтрации безопасности (например, для статичных ресурсов)
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(
@@ -81,14 +86,16 @@ public class WebSecurityConfig {
         );
     }
 
+    // Метод для настройки провайдера аутентификации (пользователь и пароль)
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(appUserService);
+        provider.setPasswordEncoder(bCryptPasswordEncoder); // Устанавливаем шифровальщик паролей
+        provider.setUserDetailsService(appUserService); // Устанавливаем сервис для получения данных пользователя
         return provider;
     }
 
+    // Метод для настройки менеджера аутентификации
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

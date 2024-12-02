@@ -1,4 +1,18 @@
+/**
+ * Скрипт для работы с формами и модальными окнами на странице.
+ *
+ * Функционал:
+ * - Отправка запроса на сброс пароля.
+ * - Сохранение данных пользователя с отправкой формы.
+ * - Отображение сообщений об успехе и ошибках.
+ * - Управление модальным окном для вывода сообщений.
+ * - Переключение видимости пароля.
+ */
 $(document).ready(function() {
+    /**
+     * Обработчик кнопки "Забыли пароль".
+     * Отправляет запрос на сброс пароля и отображает результат в модальном окне.
+     */
     document.getElementById('forgotPasswordBtn').addEventListener('click', function () {
         fetch(`/api/user/forgot-password`, {
             method: 'POST',
@@ -14,6 +28,7 @@ $(document).ready(function() {
         });
     });
 
+    // Элемент для отображения ошибок
     const errorMessageDiv = document.getElementById('error-message');
 
     errorMessageDiv.style.display = 'none';
@@ -22,6 +37,11 @@ $(document).ready(function() {
 
     let errorTimeout;
 
+    /**
+     * Обработчик кнопки "Сохранить".
+     * Отправляет данные формы для обновления профиля пользователя и обрабатывает ответ.
+     * @param {Event} event Событие отправки формы.
+     */
     document.getElementById('save').addEventListener('click', function (event) {
         event.preventDefault(); // Останавливаем отправку формы
 
@@ -54,6 +74,10 @@ $(document).ready(function() {
             });
     });
 
+    /**
+     * Отображает сообщение об успешной операции.
+     * @param {string} message Текст сообщения.
+     */
     function showSuccess(message) {
         // Сброс предыдущего таймера, если он существует
         if (errorTimeout) {
@@ -75,6 +99,10 @@ $(document).ready(function() {
         }, 10000);
     }
 
+    /**
+     * Отображает сообщение об ошибке.
+     * @param {string} message Текст сообщения.
+     */
     function displayError(message) {
         // Сброс предыдущего таймера, если он существует
         if (errorTimeout) {
@@ -96,6 +124,12 @@ $(document).ready(function() {
         }, 10000);
     }
 
+    /**
+     * Отображает модальное окно с сообщением.
+     * @param {string} title Заголовок модального окна.
+     * @param {string} message Текст сообщения.
+     * @param {string} type Тип сообщения: 'success' или 'error'.
+     */
     function showModal(title, message, type) {
         const modalElement = document.getElementById('messageModal');
         const modalLabel = document.getElementById('messageModalLabel');
@@ -128,6 +162,9 @@ $(document).ready(function() {
         $('#messageModal').modal('show');
     }
 
+    /**
+     * Обработчик для показа/скрытия пароля.
+     */
     $('.unmask').on('click', function(){
         if($(this).prev('input').attr('type') === 'password')
             $(this).prev('input').prop('type', 'text');

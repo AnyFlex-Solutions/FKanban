@@ -1,0 +1,9 @@
+{
+  "name": "resources",
+  "version": "1.0.0",
+  "dependencies": {
+  },
+  "scripts": {
+    "prometheos": "C:\\Users\\DimaK\\IdeaProjects\\FKanban\\src\\main\\resources\\prometheus\\prometheus.exe --config.file=C:\\Users\\DimaK\\IdeaProjects\\FKanban\\src\\main\\resources\\prometheus\\prometheus.yml"
+  }
+}

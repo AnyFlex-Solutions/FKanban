@@ -13,8 +13,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface ConfirmationTokenRepository
         extends JpaRepository<ConfirmationToken, Long> {
+    // Метод для поиска токена по значению
     Optional<ConfirmationToken> findByToken(String token);
 
+    // Метод для обновления времени подтверждения токена
     @Transactional
     @Modifying
     @Query(value = "UPDATE ConfirmationToken c SET c.confirmedAt = ?2 WHERE c.token = ?1")

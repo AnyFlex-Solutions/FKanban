@@ -25,25 +25,29 @@ public class Kanban {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title cannot be empty")
+    @NotBlank(message = "Title cannot be empty") // Проверка, что название не пустое
     private String title;
 
+    // Связь с задачами (Task) в доске Канбан
     @OneToMany(mappedBy = "kanban", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Task> tasks;
 
+    // Связь с задачами типа Kano (KanoTask)
     @OneToMany(mappedBy = "kanban", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<KanoTask> kano_tasks;
 
+    // Связь с пользователем (AppUser), который создал Канбан
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser user;
 
+    // Связь с приглашениями (Invitation), отправленными для Канбан
     @OneToMany(mappedBy = "kanban", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Invitation> invitations;
 
-    private boolean isDeleted = false;
+    private boolean isDeleted = false; // Флаг для логического удаления Канбан
 
     // Конструктор копирования
     public Kanban(Kanban other) {

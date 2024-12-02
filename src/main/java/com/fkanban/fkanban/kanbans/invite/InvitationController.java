@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+// Контроллер для работы с приглашениями
 @Controller
 @RequestMapping("/api/kanban")
 public class InvitationController {
@@ -41,6 +42,7 @@ public class InvitationController {
         this.invitationTokenService = invitationTokenService;
     }
 
+    // Отправка приглашения пользователю
     @PostMapping("/{kanbanId}/invite")
     public ResponseEntity<Map<String, String>> inviteUser(@PathVariable Long kanbanId, @RequestParam String inviteeEmail) {
         if (appUserService.checkUserByEmail(inviteeEmail)) {
@@ -77,19 +79,24 @@ public class InvitationController {
             }
         }
 
+        // Если пользователь с указанным email не найден
         throw new Error("Пользователь с почтой " + inviteeEmail + " не зарегистрирован");
     }
 
+    // Метод для подтверждения приглашения через ссылку
     @GetMapping("/invite/confirm")
     public String confirmInvitation(@RequestParam("token") String token) {
+        // Устанавливаем время подтверждения токена
         invitationTokenService.setConfirmedAt(token);
         InvitationToken invitationToken = invitationTokenService.getToken(token)
                 .orElseThrow(() -> new IllegalStateException("Token not found"));
 
+        // Создаем приглашение на основе токена
         invitationService.createInvitation(invitationToken.getKanban(), invitationToken.getInviter(), invitationToken.getInvitee());
-        return "redirect:/api/kanban/menu";
+        return "redirect:/api/kanban/menu"; // Перенаправление на меню Kanban
     }
 
+    // Метод для деактивации доски Kanban
     @PostMapping("/{kanbanId}/deactivate")
     public ResponseEntity<Map<String, String>> deactivateKanban(@PathVariable Long kanbanId) {
         invitationService.deactivateInvitation(kanbanId);
@@ -99,6 +106,7 @@ public class InvitationController {
         return ResponseEntity.ok(response);
     }
 
+    // Метод для формирования email-сообщения с приглашением
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto; background-color: #f4f4f4;\">\n" +
                 "    <div style=\"background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">\n" +

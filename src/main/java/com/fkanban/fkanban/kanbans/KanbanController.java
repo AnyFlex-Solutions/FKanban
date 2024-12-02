@@ -34,36 +34,42 @@ public class KanbanController {
     @Autowired
     public InvitationTokenService invitationTokenService;
 
+    // Страница Канбан с указанным ID
     @GetMapping("/{kanbanId}")
     public String kanban(@PathVariable Long kanbanId, Model model) {
         model.addAttribute("kanbanId", kanbanId);
         return "kanban";
     }
 
+    // Получение всех задач для определённого Канбан
     @GetMapping("/{kanbanId}/tasks")
     @ResponseBody
     public List<Task> getAllTasks(@PathVariable Long kanbanId) {
         return kanbanService.getAllTasksByKanbanId(kanbanId);
     }
 
+    // Создание новой задачи в Канбане
     @PostMapping("/{kanbanId}/tasks")
     @ResponseBody
     public Task createTask(@PathVariable Long kanbanId, @RequestBody Task task) {
         return kanbanService.saveTask(kanbanId, task);
     }
 
+    // Обновление задачи в Канбане
     @PutMapping("/{kanbanId}/tasks/{taskId}")
     @ResponseBody
     public Task updateTask(@PathVariable Long taskId, @RequestBody Task taskDetails) {
         return kanbanService.updateTask(taskId, taskDetails);
     }
 
+    // Удаление задачи из Канбана
     @DeleteMapping("/tasks/{taskId}")
     @ResponseBody
     public void deleteTask(@PathVariable Long taskId) {
         kanbanService.deleteTask(taskId);
     }
 
+    // Синхронизация задач с Канбаном
     @PostMapping("/{kanbanId}/tasks/sync")
     @ResponseBody
     public ResponseEntity<?> syncTasks(@PathVariable Long kanbanId, @RequestBody List<Task> tasks) {
@@ -71,6 +77,7 @@ public class KanbanController {
         return ResponseEntity.ok().body(Collections.singletonMap("status", "success"));
     }
 
+    // Создание нового Канбана
     @PostMapping("/new")
     @ResponseBody
     public ResponseEntity<?> createKanban(@Valid @RequestBody Kanban kanban, BindingResult bindingResult) {
@@ -109,12 +116,14 @@ public class KanbanController {
         return ResponseEntity.ok(kanban);
     }
 
+    // Получение всех Канбанов текущего пользователя
     @GetMapping("")
     @ResponseBody
     public List<Kanban> getAllKanbans() {
         return kanbanService.getAllKanbansForCurrentUser();
     }
 
+    // Отображение меню с Канбанами
     @GetMapping("/menu")
     public String showKanbanMenu(Model model) {
         List<Kanban> kanbans = kanbanService.getAllKanbansForCurrentUser();
@@ -122,6 +131,7 @@ public class KanbanController {
         return "menu";
     }
 
+    // Обновление названия Канбана
     @PutMapping(value = "/{kanbanId}/title", produces = "application/json")
     public ResponseEntity<Map<String, String>> updateKanbanTitle(@PathVariable Long kanbanId, @RequestBody Map<String, String> request) {
         String newTitle = request.get("title");
@@ -131,6 +141,7 @@ public class KanbanController {
         return ResponseEntity.ok(response);
     }
 
+    // Деактивация Канбана
     @PostMapping("/{kanbanId}/deactivate-kanban")
     @ResponseBody
     public ResponseEntity<?> deactivateKanban(@PathVariable Long kanbanId) {
