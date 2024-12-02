@@ -1,0 +1,34 @@
+@startuml
+skinparam style strictuml
+hide empty members
+
+rectangle "FlexiKanban" as "FlexiKanban" {
+    class "Глобальная навигация" as globalNav
+
+    class "Меню" as menu
+    class "Проект" as proect
+
+    class "Кано-доска" as kano
+    class "Кано-задача" as kanoTask
+
+    class "Канбан-доска" as kanban
+    class "Канбан-задача" as kanbanTask
+
+    class "MoSCoW-доска" as moscow
+    class "MoSCoW-задача" as moscowTask
+
+    class "Профиль" as accaunt
+}
+
+globalNav -down- accaunt
+globalNav -down- menu
+
+menu -down- proect
+proect -down- kanban
+kanban -down- kanbanTask
+proect -down- kano
+kano -down- kanoTask
+proect -down- moscow
+moscow -down- moscowTask
+
+@enduml
