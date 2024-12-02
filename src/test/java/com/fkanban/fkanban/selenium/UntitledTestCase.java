@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -75,57 +74,12 @@ public class UntitledTestCase {
         Thread.sleep(1000);
 
         this.driver.get("http://localhost:8090/api/kanban/8");
-        this.driver.findElement(By.id("titleInput")).click();
-        this.driver.findElement(By.id("titleInput")).clear();
-        this.driver.findElement(By.id("titleInput")).sendKeys("1");
-        this.driver.findElement(By.id("submitButton")).click();
-        {
-            Actions builder = new Actions(this.driver);
-            WebElement from = this.driver.findElement(By.xpath("//div[@id='inProcess']/div[2]/div"));
-            WebElement to = this.driver.findElement(By.xpath("//div[@id='done']/div[2]"));
-            builder.dragAndDrop(from, to).build().perform();
-        }
-        {
-            Actions builder = new Actions(this.driver);
-            WebElement from = this.driver.findElement(By.xpath("//div[@id='done']/div[2]/div"));
-            WebElement to = this.driver.findElement(By.xpath("//div[@id='doing']/div[2]"));
-            builder.dragAndDrop(from, to).build().perform();
-        }
-        this.driver.findElement(By.xpath("//div[@id='doing']/div[2]/div[2]/div/p[2]")).click();
-        this.driver.findElement(By.id("moscowBtn")).click();
-        this.driver.findElement(By.xpath("//div[@id='Could']/div/button")).click();
-        this.driver.findElement(By.id("titleInput")).click();
-        this.driver.findElement(By.id("titleInput")).clear();
-        this.driver.findElement(By.id("titleInput")).sendKeys("3");
-        this.driver.findElement(By.id("submitButton")).click();
-        {
-            Actions builder = new Actions(this.driver);
-            WebElement from = this.driver.findElement(By.xpath("//div[@id='Could']/div[2]/div"));
-            WebElement to = this.driver.findElement(By.xpath("//div[@id='Wont']/div[2]"));
-            builder.dragAndDrop(from, to).build().perform();
-        }
-        this.driver.findElement(By.id("moscowBtn")).click();
-        {
-            Actions builder = new Actions(this.driver);
-            WebElement from = this.driver.findElement(By.xpath("//div[@id='Could']/div[2]/div"));
-            WebElement to = this.driver.findElement(By.xpath("//div[@id='Wont']/div[2]"));
-            builder.dragAndDrop(from, to).build().perform();
-        }
-        this.driver.findElement(By.xpath("//div[@id='Wont']/div[2]/div/div")).click();
-        this.driver.findElement(By.xpath("//div[@id='Wont']/div[2]/div/div")).click();
-        this.driver.findElement(By.id("editDescription")).click();
-        this.driver.findElement(By.id("editDescription")).clear();
-        this.driver.findElement(By.id("editDescription")).sendKeys("wer");
-        this.driver.findElement(By.id("saveButton")).click();
-        {
-            Actions builder = new Actions(this.driver);
-            WebElement from = this.driver.findElement(By.xpath("//div[@id='Wont']/div[2]/div"));
-            WebElement to = this.driver.findElement(By.xpath("//div[@id='Could']/div[2]"));
-            builder.dragAndDrop(from, to).build().perform();
-        }
-        this.driver.findElement(By.xpath("//div[@id='Could']/div[2]/div/div/p[2]")).click();
-        this.driver.findElement(By.xpath("//nav[@id='mainHeader']/div/ul[2]/li/a/span")).click();
+
+        Thread.sleep(1000);
+
         this.driver.get("http://localhost:8090/api/page/login?logout");
+
+        Thread.sleep(1000);
     }
 
     @After
