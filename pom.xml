@@ -81,11 +81,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.FKanban</groupId>
-            <artifactId>FKanban</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
